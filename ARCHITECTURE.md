@@ -1,18 +1,18 @@
 # Hey Kivi — consolidated architecture and project plan
 
-Updated: 6 September 2026. Document revision: **1.1, conversation consolidation**. Technical baseline: the reviewed v1 memory design. Status: **ready for product refinement and implementation; application not built**.
+Updated: 6 September 2026. Document revision: **1.2, portable documentation consolidation**. Runtime contracts unchanged from v1.1. Technical baseline: the reviewed v1 memory design. Status: **ready for product refinement and implementation; application not built**.
 
-This is the single starting reference for continuing the Golden Goose project. It consolidates the decisions, explanations, constraints and unresolved choices from this conversation, the assignment brief, and the saved research. It supersedes older planning notes where they differ. Research files remain supporting evidence, not additional competing plans. A finalized starting contract is not a claim that the system is optimal or already works.
+This is the governing technical reference for continuing the Golden Goose project; start at [README.md](README.md) for repository navigation. It consolidates the decisions, explanations, constraints and unresolved choices from this conversation, the assignment brief, and the saved research. It supersedes older planning notes where they differ. The consolidated [research](RESEARCH.md) supports the decisions; the [build plan](BUILD_PLAN.md) holds delivery and evaluation details. A finalized starting contract is not a claim that the system is optimal or already works.
 
 **Status language:** “user choice” records an explicit preference; “baseline” is our current engineering plan; “candidate/proposed” needs validation or a product decision; “implemented” is reserved for code that exists. At this point, only a research-only SQLite contract probe exists. The product CLI, migrations, corpus, model integration, semantic evaluation and final interface do not exist yet.
 
-**Reading route:** product and scope in section 0; tech stack in section 2; categories and storage in sections 3–4; input-to-output behavior in sections 6–9; caching in section 10; import/configuration/tools in section 11; evaluation in section 12; submission and next decisions in sections 15–17. The core plan is contained here; following research links is optional for deeper justification.
+**Reading route:** product and scope in section 0; tech stack in section 2; categories and storage in sections 3–4; input-to-output behavior in sections 6–9; caching in section 10; import/configuration/tools in section 11; evaluation in section 12; submission and next decisions in sections 15–17. Sections 12–17 retain stable reference points for the diagrams while detailed evaluation, delivery and research now live in BUILD_PLAN.md and RESEARCH.md.
 
 ## 0. Product intent, assignment scope and user behavior
 
 ### 0.1 What we are building and why
 
-The user chose **Golden Goose**, with **semantic memory for Hey Kivi** as the central engineering problem, after initially comparing it with the backend/phonetic-memory assignment. The motivation was broader learning and a more rewarding complete product. The earlier recommendation to choose backend is superseded. An initial two-day ambition makes scope discipline important; it is not a verified remaining deadline. Eligibility for multiple hiring tracks is separate from this technical plan and is not established by this document.
+The selected assignment is **Golden Goose**, with **semantic memory for Hey Kivi** as the central engineering problem. The separate backend/phonetic-memory task is outside this build. No remaining deadline or eligibility for other hiring tracks is established here.
 
 The recurring need expressed in the conversation is to recover useful past information without repeating or manually searching it, then use that information in the current request. The proposed abilities are:
 
@@ -44,7 +44,7 @@ The brief's long-term direction permits dictation to become a tool inside Hey Ki
 
 ### 0.3 What the assignment actually requires
 
-The authoritative source is the [Golden Goose brief](../Kivi_Golden_Goose_Task_Final.pdf), pages 2–7. The user's learning notes PDF was reviewed against it and is not a replacement specification.
+The authoritative source is the [Golden Goose brief](reference/Kivi_Golden_Goose_Task_Final.pdf), pages 2–7. The user's learning notes PDF was reviewed against it and is not a replacement specification.
 
 - Part One asks for the applicant's independently formed and written position, at most 100 words, and vision, at most 600 words, preserved before Part Two. It explicitly excludes generative AI from arriving at or writing that position. Completion of those documents has not been established here. This AI-assisted technical plan must not be represented as independently authored Part One work, and prior AI use must be described honestly.
 - Part Two requires one real end-to-end product with a normal-user interface and backend. **CLI first is our development sequence; CLI alone is not the final submission.** A notebook, static mockup or architectural proposal is insufficient.
@@ -482,219 +482,40 @@ Pin Python, package and model revisions during implementation, and record model-
 
 ## 12. Evaluation, review loops and stopping rule
 
-Create or obtain the **planned approximately 500 history records**. Neither that corpus nor the evaluation has been built. The current proposed protocol is **80 reviewed questions: 30 development / 50 sealed**, with whole narrative/template blocks separated. Separately audit 50 source records, split 20 development / 30 sealed, for extraction and exercise critical lifecycle/action invariants. Readiness, permitted history and time cutoffs apply to every baseline. The [earlier detailed evaluation review](research/design-review-evaluation.md) supplies rationale; this section governs where scheduling or contract details differ.
+The complete protocol is consolidated in [BUILD_PLAN.md](BUILD_PLAN.md): approximately 500 history records; 80 reviewed questions (30 development / 50 sealed); a separate 50-source extraction audit (20 / 30); narrative/template separation, availability cutoffs and no gold leakage. Compare permitted full history, source-only lexical/hybrid retrieval and typed memory with the same reader and fair evidence budgets.
 
-### 12.1 Data, question coverage and honest labels
-
-The corpus manifest records IDs/revisions, raw/formatted pairing, actual token lengths, languages/scripts, timestamp/timezone/availability coverage, duplicate events, missing metadata and ASR/formatter disagreements. Generated histories should contain coherent recurring people/events and realistic distractors. Do not shape the corpus around memorized demonstration questions or use generated gold answers without checking their supporting records.
-
-| Primary capability | Development | Sealed |
-|---|---:|---:|
-| Direct recall and attribution | 6 | 10 |
-| Combining records and evidence completeness | 4 | 8 |
-| Time, corrections and changed state | 8 | 12 |
-| Unknown, ambiguous or conflicting information | 6 | 10 |
-| Contextual assistance and current instruction priority | 6 | 10 |
-| Total | 30 | 50 |
-
-The sealed target has 40 answerable cases and 10 insufficient/conflicting cases. Treat English, Hindi in Devanagari, Romanized Hindi/Hinglish, code switching and cross-language query/source pairs as overlapping slices. Proposed coverage is at least 20 multilingual/mixed-language questions including eight cross-language pairs, with names, negation, dates and ambiguous “kal.” Missing coverage remains visible; separately labeled authored stress fixtures do not inflate natural-data results. An English interface is a starting proposal, separate from multilingual text handling.
-
-Each question records query time/timezone, available source revisions, acceptable supporting spans/evidence sets, required and forbidden claims, answerability, expected behavior and scenario ID. Separate whole narratives/templates and their paraphrases before tuning. Keep question text, rubrics and gold answers outside memory ingestion. Human review checks source support; the answering model cannot certify its own gold. Disclose single-reviewer limitations; ideally independently review ambiguous/multilingual cases and a sample of other questions.
-
-Temporal replay uses only sources available by the query cutoff. An old event imported later must not overwrite newer state based solely on import order. If availability is absent, use a declared simulated order; never fabricate real chronology. Derived links, extractions, summaries and indexes obey the same cutoff and current exclusions.
-
-### 12.2 Baselines, metrics and release proposals
-
-Compare full allowed history where it fits, lexical original-source retrieval, hybrid original-source retrieval and hybrid with typed memory. Give full history its actual full context and report fitting subsets; do not artificially truncate it into a weak baseline. Measure supported task success, evidence coverage, current/historical correctness, false abstention, inappropriate personalization, tool outcomes, latency, tokens and ingestion-plus-query cost. Public benchmark scores are not evidence of Kivi performance. [LongMemEval](https://github.com/xiaowu0162/LongMemEval)
-
-Hold the answer model, instructions, scope and cutoff constant between systems. For retrieval systems, use the same initial evidence-token budget and deduplicate observations. Score evidence delivered after packing, not merely source IDs that appeared earlier in a ranking. Missing retrieval traces mean unmeasured, not perfect retrieval. Full-history fit includes prompt/query, output reservation and a proposed 1,024-token safety margin against the verified context limit.
-
-Primary quality measure: **fully supported task success**—required claims/actions satisfied, no material unsupported additions, correct subject/time/modality, and actual evidence for personal-history claims. Report these separately:
-
-| Stage | What to inspect |
-|---|---|
-| Extraction | Admitted precision, eligible recall, wrong subject, invented details, bad merges/updates, unresolved and no-op decisions |
-| Retrieval | Source Recall@5/10, all-required-evidence coverage, decisive-span coverage after packing, truncation/readiness |
-| Answering | Claim support, citation completeness, correct answer with wrong source, current versus historical accuracy |
-| Abstention | False assertions when history is insufficient; needless clarification/abstention on answerable cases |
-| Personalization | Useful adaptation, current instruction priority, unnecessary callbacks or invented preferences |
-| Tools | Actual effect and permission/target correctness; truthful partial/failed/unknown status |
-| Operations | Ingestion throughput/lag, cold/warm query latency, retries/errors, DB/index growth, model RAM, calls/tokens/cost |
-
-Human judgment is primary for this small suite. If an automatic judge is used, version its model/rubric, hide candidate identity where possible, and inspect disagreements and critical errors. Record concise decision reasons and observed traces, not private model reasoning. Show counts and denominators and paired wins/losses. Any uncertainty estimate must respect shared scenario blocks; small language slices do not establish population reliability.
-
-Proposed final acceptance thresholds inherited from the review are listed here so they cannot disappear into another file. **They are not achieved results or user-approved performance promises.** Ratify them before opening sealed results; use corresponding development measurements for tuning. Sealed measurements assess the frozen candidate, not a new round of tuning.
-
-| Proposed gate | Initial threshold to ratify |
-|---|---|
-| Import accounting | Every intended source accounted for, with inspectable status/provenance and applicable integrity checks passing |
-| Typed extraction | On audited sealed sources, at least 95% admitted precision and 80% eligible recall; zero critical wrong-person or invented-authorization writes |
-| Supported task quality | At least 34/40 answerable cases fully supported; at least 9/10 insufficient/conflicting cases use the correct fallback; at most 2/40 needless abstentions/clarifications |
-| Critical integrity | Zero cross-user disclosure, excluded-content release, unauthorized write or false tool-success claim in applicable tested scenarios |
-| Added complexity | At least three net additional supported successes out of 50, or preserved successes with at least 20% lower measured p95 latency or intended-horizon total cost; no new critical failure or weaker temporal performance |
-| Final experience | Recall, changed-state answer, correction, forgetting, ambiguity and prepared/cancelled-action journeys work through the actual UI/backend with persistent state and truthful outcomes |
-
-These sample-based gates cannot prove absence of errors. If results do not distinguish alternatives, keep the simpler design and disclose uncertainty. If an unimplemented optional component has no test, mark it unimplemented rather than passed.
-
-Use paired development failures to select one component experiment at a time. Freeze the strongest simpler comparator and the memory candidate before the 50 sealed questions. A maximum of 320 reader attempts is the proposed initial budget; the earlier worst-case 314-call schedule leaves inadequate retry space, so use two sealed finalists by default and trim optional diagnostics before the run. Count actual attempts, not questions; do not skip difficult cases when the budget runs out. Extraction, embeddings and judging have separately declared budgets.
-
-The two-finalist schedule starts at 120 development comparisons plus 100 sealed comparisons. With all optional diagnostics (24 no-memory/gold-source calls) and stability checks (20) included and one attempt per comparison, 264 attempts are planned, leaving 56 of the 320 for additional calls/retries. Fewer optional checks leave more reserve; multi-call requests consume it. Preflight token/currency limits may require fewer optional diagnostics. A budget-exhausted run is incomplete and must be reported as such; gold-source diagnostics never count as achievable retrieval performance. A proposed starting generation cap is 2,048 tokens including reasoning where enforceable, with visible answers near 512 tokens; verify provider accounting first.
-
-Prototype targets to ratify during preflight, before sealing: warm local retrieval p95 <= 500 ms **including query encoding, DB/vector work and evidence packing**; report those subcomponents separately. Ordinary full response p50 <= 5 s / p95 <= 15 s, request deadline 30 s. These are desired targets, not measured promises. Report cold starts, failures, sample counts, processing lag, database/model RAM, calls/tokens and unknown prices honestly.
-
-Report end-to-end latency including failed requests, with successful-only timing separately. Buffered answers mean time to first visible output includes validation. Do not claim p99 from a tiny sample. Report ingestion plus query cost at declared reuse horizons, initially Q=10/100/1,000 queries; free credits do not make token usage zero. Unknown monetary pricing remains unknown. Include retry/evaluation/judging costs separately.
-
-### 12.3 Product integrity suite, distinct from the research probe
-
-Implement tests for repeated import with distinct identical events; restart/resume; correction during extraction; late old information; forgetting during extraction/embedding; correction or deletion during answering; dependent artifact/alias/cache suppression; cross-user scope; instructions inside history; skipped or cancelled actions; changed authorization/arguments; and unknown tool outcomes without blind retries. Include the held-source and own-source freshness cases discovered in the research probe.
-
-These checks use controlled faults and staged outputs, then exercise the real application boundaries as they are built. The final HTTP/UI path must preserve the same rules, including suppression of cancelled late results. **The 12 already passing research checks are not the same thing as this planned product integrity suite.** Real concurrency, disk recovery, model interpretation and selected tool integration still require appropriate implementation tests.
-
-### 12.4 Review loops and stopping rule
-
-Design review loop: research -> explicit contracts -> independent adversarial review -> revise -> isolated contract probes -> final cross-check. Stop architectural review when no unresolved blocking contract contradiction remains and unmeasured choices have explicit experiments/change gates. This cannot establish an absolute best system before product measurements.
-
-Implementation loop: build the smallest end-to-end path -> exercise invariants and development questions -> diagnose extraction/retrieval/packing/model/action failures -> change one justified component -> rerun affected checks. Once required checks and declared targets pass, freeze and run the sealed comparison. Later changes influenced by sealed failures need fresh held-out cases for a new generalization claim.
-
-Do not add a graph database or cache because it is fashionable. Adopt it only when it fixes a measured relevant limitation with acceptable correctness, cost, latency and maintenance. If typed extraction does not help a class of questions, preserve its simpler source route rather than expanding the ontology to hide the failure.
+It preserves proposed quality/integrity gates, multilingual slices, the two-finalist 320-reader-attempt budget, cold/warm latency and ingestion-plus-query cost accounting, product failure fixtures and submission evidence. These are **proposals, not achieved results**. Ratify targets before sealing; tune on development cases, freeze and evaluate. Change one justified component at a time; prefer the simpler route when added complexity has no measured benefit. The isolated probe is distinct from the required product integrity suite.
 
 ## 13. Research inspirations and why this is not a framework transplant
 
-Primary sources checked through 6 September 2026 support mechanisms, not a universal winner. The following newer papers are treated as research evidence requiring local replication; current repository behavior was checked separately.
+[RESEARCH.md](RESEARCH.md) consolidates the original competitor study, 15 research topics, three blueprint audits and three design reviews. It retains primary sources, dated repository observations, alternatives, limits and experiments. Source-backed temporal claims, durable evidence, typed admission, hybrid retrieval and bounded orchestration are mechanisms to evaluate; no framework or public leaderboard proves this product's quality.
 
-| Source | Specific inspiration and boundary |
-|---|---|
-| [Graphiti / Zep](https://github.com/getzep/graphiti) | Source-backed entities/relationships and temporal validity. Borrow the model; do not equate an OSS backend with managed Zep performance. |
-| [A-MEM](https://arxiv.org/html/2502.12110v11) | Optional associative links and generated retrieval context. An association is a discovery hint rather than proof of a real relationship. |
-| [Hindsight, Dec 2025](https://arxiv.org/html/2512.12818v1) | Explicit retain/recall/reflect operations and separation of evidence from synthesized observations. No autonomous belief reinforcement is required in v1. |
-| [SimpleMem, Jan 2026](https://arxiv.org/html/2601.02553v3) | Compact context-aware units and multiple retrieval representations. Its compression framing does not guarantee preservation of all future answers. |
-| [APEX-MEM, Apr 2026](https://arxiv.org/html/2604.14362v1) | Typed temporal assertions and preserved conflicting history. Explicit user controls still require immediate effects. |
-| [LycheeMemory V2, Aug 2026](https://arxiv.org/html/2608.12990v1) | Coherent segment batching as an optional way to reduce construction calls, subject to provenance/latency tests. |
-| [LangMem](https://langchain-ai.github.io/langmem/concepts/conceptual_guide/) | Separate memory transformations from the backing store; a checkpoint or library alone is not the entire memory contract. |
-
-Current implementation details matter. [Mem0's migration guide](https://docs.mem0.ai/migration/oss-v2-to-v3) documents ADD-only OSS extraction and moves external graph-store integration to Platform. [Hindsight's retain guide](https://hindsight.vectorize.io/developer/retain) states that raw documents producing zero memories are not discoverable through ordinary recall/reflect; our independent source search deliberately preserves that route. Hindsight now has an embedded deployment option, and SimpleMem uses embedded LanceDB, so neither is rejected on the false premise that every alternative requires a remote server.
-
-The inspected [SimpleMem builder](https://github.com/aiming-lab/SimpleMem/blob/main/simplemem/core/memory_builder.py) returns an empty list after exhausted parsing failures and asks for forced reference/date disambiguation. Our contracts distinguish failed extraction from a genuine no-op and retain unresolved names/dates. These specific differences explain why importing a framework unchanged would not finish this assignment's lifecycle requirements. A future adapter remains possible if it demonstrably reduces engineering cost while meeting the same contracts.
-
-System-design grounding includes [DDIA's official book resources](https://dataintensive.net/), Kleppmann's cited public articles on durable and derived data, [Huyen's public Agents section from AI Engineering](https://huyenchip.com/2025/01/07/agents.html), and her [ML system-design guide](https://huyenchip.com/machine-learning-systems-design/design-a-machine-learning-system.html). These supplied relevant principles and accessible sections; this research does not claim entire commercial books were read.
-
-The wider competitor study informed product questions rather than a runtime dependency decision:
-
-| Reference group | Lesson retained | Limit on what we infer |
-|---|---|---|
-| Wispr Flow, Superwhisper, other dictation tools | Context-sensitive terminology and faithful composition; avoid needless settings work | Dictionary/style features do not by themselves establish history reasoning |
-| ChatGPT, Claude, Gemini memory experiences | Low-effort continuity, understandable control and scoped use of history | Public behavior does not disclose a complete internal storage architecture |
-| Granola and other history/meeting assistants | Useful questions with inspectable source context | A narrow capture surface differs from all supplied Kivi dictations |
-| Glean, Copilot, connected knowledge tools | Access boundaries and evidence across sources | Remembered references do not grant connector access or authority |
-| Mem0, LangMem, Graphiti, A-MEM, Hindsight, SimpleMem | Reusable extraction, temporal representations, storage-independent transformations and retrieval ideas | Match versions and inspect source behavior; a framework does not automatically meet our lifecycle contract |
-| Letta/MemGPT, RAPTOR, Cognee, Supermemory | Context selection, hierarchy and richer memory systems worth understanding | No need to adopt a whole agent platform, summary tree or extra database without measured benefit |
-
-The [initial competitor report](RESEARCH_SEMANTIC_MEMORY.md) and [15-topic research dossier](research/README.md) retain source details. Their historical rankings, feature counts and early implementation sketches are not settled claims in this plan. No comparable local competitor benchmark was run, and no exhaustive market-gap claim is justified. Current product/repository details are dated research observations and must be rechecked before relying on a changed dependency or feature.
-
-Detailed audits: [memory/ontology](research/blueprint-research-memory.md), [storage/cache](research/blueprint-research-storage.md), [workflow contracts](research/blueprint-research-workflow.md).
+The design deliberately preserves source search when extraction yields nothing, explicit failure versus no-op status, unresolved names/time, scoped controls and durable interpretations. Reusing a framework remains possible if it satisfies those contracts at lower engineering cost. Hosted and open-source behavior must be checked separately. Public book sections and primary papers were consulted; no claim is made to exhaustive market coverage or reading entire commercial books. Recheck mutable dependency/product details before adoption.
 
 ## 14. Completed review, validation and next boundary
 
 Three independent researchers reviewed the integrated contracts and then checked the corrections. The closed findings include attribution/polarity in graph projections, unknown temporal bounds, scoped predicate cardinality, alias/identity provenance, current source heads, live-source promotion freshness, explicit source deletion, approval/cancellation transitions and linked retry attempts.
 
-The [isolated SQLite probe](research/validation/atomic_memory_probe.py) uses actual in-memory SQL transactions, foreign keys and FTS5 triggers with controlled sequential interleavings. Initial ten checks passed. A new held-source-forget case failed; projection unification fixed it. An additional source-promotion/freshness case tested the controlled one-call exception. Final result, independently rerun by the primary agent: **12/12 passed**, Python 3.12.14 / SQLite 3.53.1. [Machine-readable results](research/validation/atomic_memory_results.json), [failure/fix review history](research/validation/REVIEW.md).
+The [isolated SQLite probe](research/validation/atomic_memory_probe.py) uses actual in-memory SQL transactions, foreign keys and FTS5 triggers with controlled sequential interleavings. Initial ten checks passed. A new held-source-forget case failed; projection unification fixed it. An additional source-promotion/freshness case tested the controlled one-call exception. Final result, independently rerun by the primary agent: **12/12 passed**, Python 3.12.14 / SQLite 3.53.1. [Machine-readable results](research/validation/atomic_memory_results.json), [failure/fix review history](BUILD_PLAN.md).
 
 The probe does not test real concurrency, disk-crash recovery, LLM interpretation, factual accuracy, graph/alias cleanup, MCP execution or performance. It is an executable design model, not the product or its production test suite. The future application must exercise the same contracts independently.
 
 The next stage is user-point-of-view refinement: define the default experience for recalling changed information, preparing a useful personalized result, and inspecting/correcting/forgetting memory; specify ambiguity and partial-success behavior. Then implement the CLI against these contracts, starting with source import/inspection and a complete cited-answer path. Model credentials, endpoint/encoder validation, actual migrations and product tests belong to that development stage. The final assignment also needs the normal-user interface after the CLI milestone.
 
-The conversation consolidation adds an independent assignment-alignment audit, technical-contract audit and research-decision audit. They found missing submission/product context and an incorrect claim that the corpus already existed; those are corrected here. No application was built, no new model benchmark was run, and the unchanged research probe was not rerun merely to edit documentation.
+The earlier conversation consolidation added assignment-alignment, technical-contract and research-decision audits. They corrected missing submission/product context and an incorrect claim that the corpus existed. During the portable-repository handoff, the unchanged probe was rerun successfully (12/12) to check its documented invocation. No application or new model benchmark was built; this adds no evidence beyond the probe's stated scope.
 
 ## 15. Submission and reviewer completion checklist
 
-The following are **required deliverables or review-path work**, not claims of completion. All must be checked against the final implementation.
-
-- [ ] Applicant's independently authored positioning statement (<=100 words) and vision (<=600 words), with honest provenance and the brief's required ordering.
-- [ ] One GitHub repository containing complete source code, a working normal-user interface and connected backend.
-- [ ] Actual database schema and versioned migrations, with reproducible seed data.
-- [ ] Approximately 500 transcript-like development records containing raw ASR, formatted text and useful available metadata.
-- [ ] Runnable full-pipeline evaluation, reviewed cases/rubrics, generated results, failures and limitations.
-- [ ] Inspectable original inputs, accepted/retrieved/changed/rejected memories, supporting sources, resulting behavior and concise decision reasons.
-- [ ] Latency, database growth, model usage and cost accounting where relevant.
-- [ ] `README.md` explaining product, architecture, use cases, limitations, measured results and AI use.
-- [ ] `RUN.md` beginning with the primary review arrangement; no undocumented dashboard work or setup repair required.
-- [ ] Exact runtime/package/model requirements, every environment variable and an `.env.example` without private credentials.
-- [ ] Tested commands for dependency installation, database creation/migration/seeding and every process startup.
-- [ ] Exact URL/window/interface to open and primary interactions to try.
-- [ ] Exact evaluation command and where generated results can be inspected.
-- [ ] Exact procedure to import a different corpus, process it, inspect database/memory state and operate Hey Kivi.
-- [ ] Exact procedure to reset the system; application data reset must have a clear boundary and not remove unrelated files.
-- [ ] A clean-checkout test of start, import, process, use, inspect, evaluate and reset using the declared method.
-- [ ] Submission form includes repository URL and exact final commit SHA; hosted URL only if using a hosted primary review method.
-
-Deployment, Docker, native speech capture, production Kivi integration and a broad MCP catalog are optional. A reviewer can supply documented credentials and translate their data into the documented import format. They will not infer missing steps or repair the application. Choose reproducibility over an impressive-looking deployment arrangement.
+See [BUILD_PLAN.md](BUILD_PLAN.md) for the complete assignment-to-deliverable checklist: independent Part One, a real normal-user UI/backend, approximately 500 source records, unfamiliar-corpus import, source-inspectable behavior and controls, reproducible evaluation/results, setup/run/reset commands, demo and actual AI-use disclosure. The original [assignment PDF](reference/Kivi_Golden_Goose_Task_Final.pdf) governs. A CLI, static diagram or this planning repository alone is not the final product.
 
 ## 16. Build order, open decisions and scope control
 
-### 16.1 Next development stages
+[BUILD_PLAN.md](BUILD_PLAN.md) is the single detailed milestone and open-decision register. Begin with one worthwhile journey and its ambiguity/change/forget/failure states; implement durable source import and retrieval, then one supported request with controls, selective learning, measured improvements, UI and reviewer setup. Build lifecycle fixtures alongside the affected behavior.
 
-| Stage | Work | Exit evidence |
-|---|---|---|
-| 0. Product refinement | Confirm the leading user journey, useful outcome, mode boundary, uncertainty/controls experience and final review arrangement; account for Part One status | Small coherent behavior specification; each selected capability has a user purpose |
-| 1. Durable source foundation | Pin runtime/dependencies, implement import contract/schema/migrations, source inspection, jobs, policy versions and relevant exclusion/scope rules | Reproducible import accounting, persistence, reset and applicable integrity checks |
-| 2. Complete CLI answer path | Coordinator, provider preflight, lexical source retrieval, evidence bundle, cited response, errors/status/usage | Real typed question produces a supported answer or honest fallback through actual persisted state |
-| 3. Memory and retrieval comparison | Typed admission, the 12 labels, revisions/controls, source fallback; add local dense retrieval as a separately measured increment | Development evidence shows what memory and embeddings improve; corrections/forgetting work through every path |
-| 4. Useful output and evaluation preparation | One justified artifact capability; reviewed corpus/questions; paired development comparisons; failure diagnosis and candidate configuration | Truthful action/partial status and relevant integrity checks; sealed questions remain unopened |
-| 5. Complete user interface | Select/build UI and adapter around the same service; source inspection and natural controls; real loading/error/cancel behavior | Representative ordinary journeys and UI/backend integrity checks pass; freeze the final pipeline/configuration |
-| 6. Final evaluation and submission rehearsal | Run the sealed comparison on the frozen pipeline; record honest results; complete documents/schema/migrations/seed/runbook; rehearse a fresh checkout | Reviewer can start, operate, import, inspect, evaluate and reset the submitted commit; sealed-informed fixes require a new holdout for a fresh generalization claim |
-
-These are dependency stages, not a promise of a particular number of hours. Some UI work can proceed once service contracts and the user journey are stable. Build the applicable correction, scope, exclusion and trace rules with the first source path rather than postponing all correctness until a later feature stage. Final interface and new-corpus import remain essential even if optional memory enhancements are cut.
-
-### 16.2 Open decisions and the evidence that resolves them
-
-| Open item | Current position | How to resolve it |
-|---|---|---|
-| First recurring user journey | Recover/connect/apply context are candidate abilities | Select one meaningful task and review its normal, ambiguous, changed and forgotten states |
-| Applicant's Part One status | Not established in the inspected artifacts | Applicant handles the brief's independent-thinking/writing requirement; disclose actual AI use |
-| Final UI and application adapter | Required; framework undecided | Choose after the journey; use one shared service and a reproducible local review path |
-| Detailed memory admission/retention UX | Selective learning and explicit controls established | Define useful versus ignored information, sensitive-data behavior and any no-personalization experience |
-| Exact import/schema/config contract | Logical fields and proposed names specified here | Freeze validated schema and migrations before generating the final corpus |
-| NVIDIA/DeepSeek deployment | Provider family chosen; credentials later | Verify actual model ID, output contract, limits, usage accounting, failure behavior and latency |
-| Embedding default | E5-small first candidate; BGE-M3 comparator | English/Hindi/Hinglish tests, cold/warm RAM/latency and retrieval coverage |
-| Typed memory / graph contribution | Baseline schema supports them | Paired development analysis; admit default answer-path complexity only when it earns its cost |
-| Retrieval/quality/usage targets | Explicit proposals in sections 7, 9 and 12 | Ratify during development preflight, before sealed evaluation |
-| Test tooling and packaging | Custom evaluation required; tools/versions unpinned | Pick compatible small tooling and prove the clean-checkout procedure |
-
-No API key is requested during this consolidation. No unresolved choice justifies silently presenting a proposed framework, threshold or command as already implemented.
-
-### 16.3 What to cut first if scope is too large
-
-Defer a graph server, Redis, approximate indexing, query/answer caches, recursive summaries, rerankers, autonomous reflection, separate skills/roles infrastructure, broad external integrations and optional benchmark grids before cutting source coverage, evidence, correction/forgetting, useful user behavior, evaluation or the final UI. A source-only route that outperforms extraction on a question class is a valid route in the product.
-
-Readiness today means the memory architecture is concrete enough to implement and interrogate. It does not mean the product position, interface, model quality, speed or submission readiness has been proven. The next useful evidence comes from the smallest complete working journey and its evaluation, rather than another unbounded research cycle.
+NVIDIA-hosted DeepSeek is the user's chosen provider/model family. Exact endpoint, UI/API framework, detailed admission/retention UX, physical schema/import contract, embedding default and measurable targets remain open. Defer additional databases, caches, recursive summaries, rerankers, reflection and broad integrations before cutting evidence coverage, correction/forgetting, useful behavior, evaluation or the final interface.
 
 ## 17. Conversation decision register and fresh-start handoff
 
-This consolidation reviewed all three pages of retrievable turns in this task, the latest visible conversation, the official assignment extract and the saved planning/research artifacts. It is a decision record, not a verbatim transcript. Tool outputs and every historical feature list are not duplicated; relevant conclusions and their limitations are retained. The inspected sources are listed below so a future review can distinguish evidence from proposals.
+Read [README.md](README.md), [AGENTS.md](AGENTS.md) and the relevant [build milestones](BUILD_PLAN.md) to continue on another machine or in a new chat. Current decisions: Golden Goose rather than the phonetic/backend task; one MemoryService over one SQLite database; twelve overlapping categories; imported paired history plus typed Hey Kivi requests; evidence-first source fallback; controlled live-input release; explicit controls before success claims; one bounded coordinator and worker; optional measured retrieval extensions.
 
-| Conversation topic / earlier idea | Current resolution | Where to resume |
-|---|---|---|
-| Backend versus Golden Goose | User chose Golden Goose; no parallel phonetic product is in this build | Section 0 |
-| Kivi versus Sarvam; dictation versus assistant | Company/product and mode boundaries retained; no full Kivi clone or ASR required | Section 0.2 |
-| “Any question” | Any reasonable supported/derivable history question; no guessing or fixed-demo restriction | Sections 0.3, 9, 12 |
-| User control without administration | Natural correction/forget/why, automatic routine organization, inspectable evidence | Sections 0.4, 5–8 |
-| Direct input versus speech; language | Imported paired text plus typed requests; multilingual testing proposed, no hidden-language guarantee | Sections 0.3, 11.1, 12.1 |
-| LLM API key / provider | NVIDIA-hosted DeepSeek chosen; key and exact deployment later; local embeddings separate | Sections 2, 11.1 |
-| Abilities, tools, skills and harness | Observable recover/connect/apply abilities; small custom orchestration; narrow tools | Sections 0.1, 6–8, 11 |
-| Broad semantic categories | Twelve overlapping content labels, independent forms/topics/time/attribution, shared storage | Sections 3–4 |
-| Separate semantic database | Logical MemoryService over one SQLite file; exact table groups specified | Sections 1, 4 |
-| Graph, map, hierarchy and recency | Supported relationships in SQL; optional RAM maps; recency helps ranking without excluding old evidence | Sections 1, 3, 9–10 |
-| Cache inside the database | Persisted vectors/loaded encoder useful; query cache measured later; final-answer cache off | Section 10 |
-| Input → extract everything → answer | Current path retrieves and proposes; controls commit synchronously, ordinary learning is durable background work | Sections 7–9 |
-| Uncertainty and implicit France/Paris recall | Selective clarification and appropriate personalization; no invented preference/identity/time | Section 0.4 |
-| External work through MCP | Connectivity adapter only; current authority, observed outcomes and reconciliation remain our responsibility | Sections 8, 11 |
-| Sources as truth / memory as disposable index | Sources record what was expressed; accepted interpretations and user controls are durable too; search projections are rebuildable | Sections 4–5 |
-| Research and competitor choices | Mechanisms borrowed; no mandatory memory framework, private architecture guess or unreplicated performance ranking | Section 13 |
-| Evaluation count and old schedules | About 500 records; proposed 80 questions, 50-source audit, separate integrity suite; two sealed finalists by default | Section 12 |
-| Atomicity and validation | Reviewed contracts and research-only 12/12 checks retained; product/concurrency/model tests still pending | Sections 8, 14 |
-| Founder pitch / “ready to go” | Defensible implementation plan; no claim of a working app or measured advantage | Sections 14–16 |
-| Fresh start | Read this file, refine user POV and unresolved choices, then implement the smallest complete CLI path | Sections 15–16 |
-
-Supporting material: [official assignment](../Kivi_Golden_Goose_Task_Final.pdf); [five product questions](research/PRODUCT_QUESTIONS.md); [research index](research/README.md); [earlier end-to-end explanation](research/END_TO_END_DESIGN.md); [earlier architecture proposal](research/ARCHITECTURE_PROPOSAL.md); [evaluation review](research/design-review-evaluation.md); and [probe validation history](research/validation/REVIEW.md). Earlier generic `records`/`memories` table names, six-type category sketches, immediate publication of live input, 60-question examples and historical framework descriptions do not override the current revisioned contracts.
-
-For a fresh planning session: treat this file as the baseline, preserve explicit user choices and correctness rules, propose changes with a user benefit and measurable tradeoff, update the decision/status tables when a choice changes, and never turn an unmeasured proposal into a claim of completion. The immediate task is product refinement followed by CLI development—not recreating the research from scratch.
+Earlier six-category sketches, generic unversioned schema examples, immediate shared publication of live input, 60-question examples and superseded framework recommendations do not override these contracts. The original notes are recoverable from commit `3586cf9`; [consolidation provenance](reference/documentation-consolidation.json) records their new homes. Preserve explicit choices and correctness rules, and revise decisions only with a stated user benefit and testable tradeoff. The next evidence should come from a working journey, not restarting an unbounded research cycle.

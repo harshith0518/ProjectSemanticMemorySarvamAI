@@ -1,0 +1,422 @@
+[
+  {
+    "id": "01-assignment-and-user-journey",
+    "title": "The assignment and the user experience",
+    "subtitle": "What problem the product must solve, what the demonstration must prove, and which boundaries matter.",
+    "purpose": "Help a person recover useful work history and apply it to a present request, with evidence and effortless control. The leading recurring task still needs to be selected.",
+    "steps": [
+      {
+        "title": "Choose a useful task",
+        "body": "Start from a recurring user need. Select the few capabilities that create meaningful value; memory capacity alone is not a product."
+      },
+      {
+        "title": "Ground it in history",
+        "body": "Use real persisted transcripts and model decisions. Recover relevant facts, preferences and episodes, including information distributed across records."
+      },
+      {
+        "title": "Show changed behavior",
+        "body": "A later answer or draft should use supported context. Make uncertainty, corrections and forgetting understandable in ordinary use."
+      },
+      {
+        "title": "Prove the experience",
+        "body": "Demonstrate the real interface and backend, then evaluate the complete pipeline and let a reviewer import unfamiliar history."
+      }
+    ],
+    "panels": [
+      {
+        "title": "Two coherent modes",
+        "items": [
+          "Regular dictation preserves intended content; vocabulary and writing style are separate concerns.",
+          "Hey Kivi uses relevant history for interactive help. Memory does not authorize unsolicited content insertion.",
+          "Transcript replay and typed requests are acceptable. Speech recognition and production Kivi integration are not required."
+        ]
+      },
+      {
+        "title": "Independent product work",
+        "items": [
+          "First use Kivi and study other products: how memory, personalization and user control relate.",
+          "Part One: applicant forms and writes a position of at most 100 words and a vision of at most 600 words.",
+          "The brief excludes generative AI from arriving at or writing Part One. Preserve both documents before Part Two.",
+          "This technical SVG pack is AI-assisted planning material. It is not the applicant's Part One submission."
+        ]
+      },
+      {
+        "title": "A complete demonstration",
+        "items": [
+          "A normal-user interface must begin and end the experience; a CLI is only an intermediate build milestone.",
+          "Narrow tools are acceptable; history questions cannot be restricted to a memorized demonstration script.",
+          "Supported recall, useful context, uncertainty, control and inspectable sources must work together."
+        ]
+      }
+    ],
+    "example": "Illustrative journey, not the final product choice: recall the Jaipur budget → draft a checklist → change the budget → inspect its source → forget it → verify the next answer respects that change.",
+    "remaining": "Select the first recurring task, confirm the applicant's Part One status, and specify normal, ambiguous, corrected, forgotten and failed outcomes. The working interface/backend are not built.",
+    "mentor_question": "Does the chosen recurring task create enough value to justify what this product remembers?",
+    "source": "Golden Goose brief pp.2–6; architecture §§0, 15–16"
+  },
+  {
+    "id": "02-import-and-source-evidence",
+    "title": "Import history without losing its meaning",
+    "subtitle": "The durable source ledger is the starting evidence for both search and learning.",
+    "purpose": "Accept paired transcript records from development data or a reviewer's corpus. Preserve original evidence, missing metadata and source identity before deriving memories.",
+    "steps": [
+      {
+        "title": "Validate the envelope",
+        "body": "Read raw ASR, formatted text, source identity and available metadata. Keep optional times, app and project fields missing when unknown."
+      },
+      {
+        "title": "Resolve import identity",
+        "body": "Use stable record ID, revision and payload. Repeating an import must not duplicate an event; identical text can still describe distinct events."
+      },
+      {
+        "title": "Commit source and jobs",
+        "body": "Persist the original revision and head, permitted visibility and required durable work in one transaction. Record each row's outcome."
+      },
+      {
+        "title": "Expose permitted search",
+        "body": "Make allowed source text searchable independently of extraction. Queue learning and optional encoding with visible stage readiness and failures."
+      }
+    ],
+    "panels": [
+      {
+        "title": "Proposed import contract",
+        "items": [
+          "schema_version; record_id and revision; exact raw_asr and formatted_text.",
+          "Optional captured_at, timezone and available_at preserve distinct meanings.",
+          "Optional app, conversation_id, project_id and original metadata; app name is not project identity.",
+          "Trusted user scope comes from the application/import command, not from the model or an arbitrary row."
+        ]
+      },
+      {
+        "title": "Evidence rules",
+        "items": [
+          "Raw and formatted text are paired versions of one observation, not independent corroboration.",
+          "Preserve material disagreement; fluent formatting does not establish factual truth.",
+          "Evidence spans use original field/revision and zero-based Unicode character positions, with end excluded.",
+          "Normalization, transliteration or chunking needs a mapping back to original spans."
+        ]
+      },
+      {
+        "title": "Integrity and reviewer use",
+        "items": [
+          "Account for every row: accepted, duplicate, pending or rejected, with a reason.",
+          "Restart/resume must retain progress. An empty extraction is different from a processing failure.",
+          "Reimport cannot silently recreate excluded or deleted knowledge; define explicit restoration separately.",
+          "Document import, process, inspect, query and reset for another approximately 500-record corpus."
+        ]
+      }
+    ],
+    "example": "An old transcript imported today can describe last month's budget. Its arrival time must not make that old value overwrite a supported newer budget. Missing source dates remain unknown.",
+    "remaining": "Freeze and implement the import schema, migrations, source inspection, keyword indexing, durable jobs and reset behavior. Create a small reviewed fixture before expanding to the full corpus.",
+    "mentor_question": "Can a reviewer import ordinary logs without inventing metadata or repairing undocumented setup?",
+    "source": "Brief pp.4–7; architecture §§4–5, 7, 11.1",
+    "terms": "Revision = a specific saved version. Head = the selected current revision. Permitted projection = only the source text still eligible for use. A span identifies an exact passage in the original text."
+  },
+  {
+    "id": "04-memory-schema-and-categories",
+    "title": "What a memory contains and how it is stored",
+    "subtitle": "One SQLite database holds source evidence, versioned interpretations and independent search representations.",
+    "purpose": "A memory is an attributed claim with evidence and qualified applicability. Twelve content labels organize shared records; they do not create twelve databases or isolated retrieval routes.",
+    "steps": [
+      {
+        "title": "Source evidence",
+        "body": "Preserve original text and metadata under a source revision. Current permitted projections govern how this evidence can be used."
+      },
+      {
+        "title": "Supported interpretation",
+        "body": "Store subject, predicate, typed value, units, scope, time, attribution, modality, evidence and lifecycle. Keep prior revisions and accepted decisions."
+      },
+      {
+        "title": "Independent indexes",
+        "body": "Index allowed sources even when no memory is admitted. Build memory keyword/vector indexes separately; record revisions, configuration and readiness."
+      }
+    ],
+    "panels": [
+      {
+        "title": "Core schema contracts",
+        "items": [
+          "Memory form: semantic knowledge, episodic experience or a user-authorized reusable procedure.",
+          "Separate direct statement, tool observation, inference and summary; derived material retains its dependencies.",
+          "Evidence links exact memory/source revisions and spans. Scope and time qualify the claim.",
+          "Source/memory heads, aliases/edges, exclusions, jobs, operation receipts and owner revisions preserve lifecycle and auditability."
+        ]
+      },
+      {
+        "title": "Content labels 1–6",
+        "items": [
+          "1. Entities and attributes: people, organizations, equipment and stated capabilities.",
+          "2. Relationships and roles: family, teams, ownership and responsibility.",
+          "3. Preferences and priorities: likes, style and contextual tradeoffs.",
+          "4. Constraints and requirements: budgets, units, limits and conditions.",
+          "5. Routines and recurring patterns: supported regular behavior.",
+          "6. Goals and desired outcomes: aspirations, separate from promises."
+        ]
+      },
+      {
+        "title": "Content labels 7–12",
+        "items": [
+          "7. Plans, tasks and commitments: distinct intention and obligation types.",
+          "8. Decisions and stated reasons: accepted choices; preserve reasons only when stated.",
+          "9. Progress, blockers and issues: task state, dependencies and questions.",
+          "10. Beliefs, ideas and hypotheses: attributed thought, not confirmed truth.",
+          "11. Personal vocabulary: what a term refers to or means.",
+          "12. Resources and references: files, links and locations; no implied access."
+        ]
+      }
+    ],
+    "example": "“For the Jaipur trip, our total hotel budget is INR 6,000” → category: constraint; value: 6000; currency: INR; scope: Jaipur trip; meaning: total hotel budget; evidence: exact phrase. It does not imply INR 6,000 per night.",
+    "remaining": "Implement actual SQL constraints, migrations, predicate rules and evidence mappings. The schema is currently a reviewed logical contract; no product database implementation exists.",
+    "mentor_question": "Which structured fields are essential to reliable behavior, and which can wait for demonstrated value?",
+    "source": "Architecture §§1–4, 9–10; brief pp.4–6",
+    "terms": "Predicate = the relationship or property being asserted. Modality = fact, intention, belief or condition. Polarity = positive or negated meaning. Head = current selected version; older versions retain their history."
+  },
+  {
+    "id": "12-interface-and-explainability",
+    "title": "Make memory understandable in the application",
+    "subtitle": "The person gets useful help and simple controls; an engineer can inspect the underlying decision.",
+    "purpose": "Connect the final normal-user interface to the same MemoryService as the CLI. Memory should improve the task without requiring the user to administer records or graph nodes.",
+    "steps": [
+      {
+        "title": "Ask naturally",
+        "body": "Enter a Hey Kivi request or replay transcript history. Show processing state and allow cancellation; native speech capture is optional."
+      },
+      {
+        "title": "Receive a useful result",
+        "body": "Present a supported answer, draft, clarification or honest partial outcome. Apply current instructions and relevant remembered context."
+      },
+      {
+        "title": "Inspect the evidence",
+        "body": "Open the source interactions that support personal claims. Distinguish source text, learned interpretation, uncertainty and actual tool observations."
+      },
+      {
+        "title": "Correct or forget",
+        "body": "Offer simple natural controls and an explicit targeted path. Acknowledge success only after the backend commits the change."
+      },
+      {
+        "title": "See future behavior change",
+        "body": "A later request should respect corrected values and exclusions. Reconnect/replay must not return a stale forbidden answer."
+      }
+    ],
+    "panels": [
+      {
+        "title": "Normal-user surfaces",
+        "items": [
+          "Question and answer with usable sources, without exposing database jargon.",
+          "Ambiguity: one focused question or supported alternatives; skipping preserves uncertainty.",
+          "Remember/correct/forget and source deletion with clear retention wording.",
+          "Visible pending, unsaved, cancelled, failed and unknown outcomes; no invented completion."
+        ]
+      },
+      {
+        "title": "Engineer inspection",
+        "items": [
+          "Input → created/changed/rejected memory → retrieved evidence → resulting behavior.",
+          "Show exact source revisions/spans, relevant memory state, policy/configuration versions and concise decision reasons.",
+          "Expose stage readiness, worker failures, retries, model usage, latency and cost basis.",
+          "The same permission/exclusion boundary applies to retained trace content and source inspection."
+        ]
+      },
+      {
+        "title": "Experience acceptance",
+        "items": [
+          "Recall and changed-state answers work through the actual UI and persistent backend.",
+          "Correction, forgetting, ambiguous references and partial failures have coherent user-visible outcomes.",
+          "The final product must be intelligible without a developer console or an explanation of the storage system.",
+          "CLI and interface use one core implementation. The frontend/API framework remains undecided."
+        ]
+      }
+    ],
+    "example": "User: “Why did you choose that budget?” → show the original update. User: “That was for Goa.” → resolve scope, commit the correction, and give the next Jaipur answer from the corrected permitted history.",
+    "remaining": "Select the concrete journey, frontend and application adapter. Build the answer/evidence/control experience and exercise it against real persisted state. No final user interface currently exists.",
+    "mentor_question": "Can someone verify and correct a result without becoming the administrator of the memory system?",
+    "source": "Brief pp.3–6; architecture §§0.4, 7, 11–12"
+  },
+  {
+    "id": "13-corpus-evaluation-and-quality",
+    "title": "Prove quality with a reproducible evaluation",
+    "subtitle": "Measure the complete product and compare added memory against simpler source-based approaches.",
+    "purpose": "Show where the system succeeds, abstains and fails. Use human-reviewed evidence and held-out cases to test generalization to unfamiliar dictation history.",
+    "steps": [
+      {
+        "title": "Build realistic history",
+        "body": "Create about 500 paired records: recurring people/events, distractors, changed facts, missing metadata, ASR disagreements and multilingual cases."
+      },
+      {
+        "title": "Review questions and evidence",
+        "body": "Propose 80 questions: 30 development, 50 sealed. Separately audit 50 source records. Keep gold answers and labels out of ingestion."
+      },
+      {
+        "title": "Compare complete pipelines",
+        "body": "Hold answer model, instructions, scope and cutoffs constant. Compare full history, source keyword, source hybrid and hybrid with typed memories."
+      },
+      {
+        "title": "Diagnose before tuning",
+        "body": "Inspect admission, retrieval, evidence packing, answer support, controls and tools. Change one justified component using development failures."
+      },
+      {
+        "title": "Freeze and report",
+        "body": "Freeze the candidate before sealed evaluation. Retain failures, denominators, traces and costs; rehearse the reviewer path on the submitted code."
+      }
+    ],
+    "panels": [
+      {
+        "title": "Cases and leakage control",
+        "items": [
+          "Cover direct recall, multi-record evidence, time/changes, insufficient/conflicted history and contextual assistance.",
+          "Proposed sealed split: 40 answerable + 10 insufficient/conflicting cases; source audit split: 20 development + 30 sealed.",
+          "Separate whole narratives/templates; evaluate only records available at the query cutoff and allowed by current exclusions.",
+          "Test English, Hindi/Hinglish, cross-language queries, names, negation and ambiguous dates. Hidden-corpus languages remain unknown.",
+          "Give the full-history baseline all permitted context when it fits; disclose truncation and compare availability fairly."
+        ]
+      },
+      {
+        "title": "Quality and integrity",
+        "items": [
+          "Measure fully supported task success: required content, correct subject/time and no material unsupported additions.",
+          "Audit admission precision/recall, all-required-evidence coverage, citations, false abstention and inappropriate personalization.",
+          "Test source fallback, corrections, forgetting, stale jobs/answers, cross-user scope, hostile history and actual tool outcomes.",
+          "Proposed gates: ≥95% admitted precision; ≥80% eligible recall; ≥34/40 supported answers; ≥9/10 correct insufficient-history fallbacks.",
+          "Critical failures must be zero: wrong-person or invented-authority writes, cross-user or excluded-content release, and false success."
+        ]
+      },
+      {
+        "title": "Operations and honest claims",
+        "items": [
+          "Report retrieval and full-response latency, cold starts, failures, indexing lag, database/model size, calls, tokens and cost basis.",
+          "Proposed targets: warm retrieval p95 ≤500 ms; full response p50 ≤5 s / p95 ≤15 s. None is measured yet.",
+          "Proposed budget: 320 reader attempts; extraction, encoding and judging have separate budgets. An exhausted run is incomplete.",
+          "Only the isolated storage probe has passed 12/12. Product quality, real concurrency, recovery and performance remain untested."
+        ]
+      }
+    ],
+    "example": "A fluent answer with the wrong person's budget fails. So does a correct number supported by the wrong source, a historical value presented as current, or an answer that recovers forgotten information.",
+    "remaining": "Build corpus, annotations, baselines, integrity tests and results. Proposed complexity gate: ≥3 net added successes/50, or preserved quality with ≥20% lower p95 latency or intended-horizon cost; no critical or temporal regression. Small differences may be inconclusive.",
+    "mentor_question": "What evidence would convince us that structured memory improves the task enough to justify its errors and cost?",
+    "source": "Brief pp.4–7; architecture §12"
+  },
+  {
+    "id": "14-reviewer-setup-and-submission",
+    "title": "Make the complete product reproducible",
+    "subtitle": "A reviewing agent will clone the final commit, follow RUN.md, import new history and evaluate the actual system.",
+    "purpose": "Eliminate undocumented setup and demonstration-only behavior. The proposed primary arrangement is a local application/database connected to a hosted model API.",
+    "steps": [
+      {
+        "title": "Install and configure",
+        "body": "Declare runtimes, versions, dependency commands and every environment variable. Provide an environment example with no credentials committed."
+      },
+      {
+        "title": "Create and start",
+        "body": "Provide exact commands to create, migrate and seed the database, start required processes, and open the user interface."
+      },
+      {
+        "title": "Operate and inspect",
+        "body": "Explain primary interactions, memory/source inspection and meaningful limitations. The reviewer should use the product without repairing setup."
+      },
+      {
+        "title": "Import and evaluate",
+        "body": "Document another-corpus translation/import, processing, history-grounded queries, evaluation command and the location of results and memory state."
+      },
+      {
+        "title": "Reset and rehearse",
+        "body": "Document a bounded reset. Test the complete install/start/import/process/operate/inspect/evaluate/reset path from the submitted commit."
+      }
+    ],
+    "panels": [
+      {
+        "title": "Repository deliverables",
+        "items": [
+          "Applicant's independently authored position and vision, with the brief's required ordering.",
+          "Complete source code, a working normal-user interface and a real connected backend.",
+          "Database schema/migrations, reproducible seed data and the approximately 500-record corpus.",
+          "Runnable evaluation, generated results, visible failures, limitations and inspectable decision traces."
+        ]
+      },
+      {
+        "title": "README and RUN.md",
+        "items": [
+          "README explains product, architecture, use cases, limitations, results and actual AI use.",
+          "RUN.md begins with the primary review method, then lists all setup, database and process commands.",
+          "Include interface location, interactions, evaluation command, new-corpus procedure, inspection locations and reset instructions.",
+          "Name credentials precisely, pin required versions, and disclose model-download/startup needs. No private credentials in Git."
+        ]
+      },
+      {
+        "title": "Reviewer and submission boundary",
+        "items": [
+          "The reviewer may supply documented credentials and translate its own roughly 500 dictations into the declared import format.",
+          "It will not infer missing steps, perform undocumented dashboard work, repair the application or ask for clarification.",
+          "Submit one repository URL and the exact final commit SHA. Add the application URL when hosted is the primary method.",
+          "Hosting and Docker are optional. A hosted review path additionally needs a direct URL, access details and complete operating instructions."
+        ]
+      }
+    ],
+    "example": "A successful rehearsal starts from a clean checkout, creates fresh state, imports an unfamiliar fixture, asks a supported history question, inspects its sources, runs evaluation and resets without hidden manual work.",
+    "remaining": "Implement the product and document commands only after testing them. RUN.md, actual migrations, seed data, corpus and evaluation results are still required deliverables.",
+    "mentor_question": "Could a new reviewer reproduce the claimed behavior using only this repository and declared credentials?",
+    "source": "Golden Goose brief pp.6–7; architecture §§11.1, 15–16"
+  },
+  {
+    "id": "15-build-order-and-mentor-feedback",
+    "title": "From reviewed plan to a complete product",
+    "subtitle": "Use mentor feedback to narrow the first useful journey and turn each milestone into observable evidence.",
+    "purpose": "Preserve the core truth and control guarantees while building the smallest complete path. Planning coverage is not a measure of implemented product completion.",
+    "steps": [
+      {
+        "title": "Specify the first journey",
+        "body": "Select one recurring task and its normal, ambiguous, changed, forgotten and failed states. Account for independently authored Part One."
+      },
+      {
+        "title": "Persist and inspect sources",
+        "body": "Build import, migrations, source identity, permitted projections, inspection and keyword search. Prove restart/reimport and relevant scope/exclusion rules."
+      },
+      {
+        "title": "Complete one answer path",
+        "body": "Connect the model/coordinator to persisted sources. Add citations, honest unknowns, explicit controls and measured calls/latency."
+      },
+      {
+        "title": "Add measured memory",
+        "body": "Implement selective extraction, temporal/entity handling and source fallback. Test optional embeddings and relationship expansion against simpler baselines."
+      },
+      {
+        "title": "Finish the experience",
+        "body": "Connect the normal-user interface and one justified artifact tool to the same core. Exercise evidence, control and failure states."
+      },
+      {
+        "title": "Evaluate and rehearse",
+        "body": "Freeze the pipeline, run sealed comparisons, report failures and costs, and complete the clean-checkout reviewer procedure."
+      }
+    ],
+    "panels": [
+      {
+        "title": "What exists now",
+        "items": [
+          "Canonical architecture, research dossier, process guide and these explanatory diagrams.",
+          "An executable research-only SQLite contract experiment with 12/12 checks recorded as passing.",
+          "The probe does not validate real concurrency, disk recovery, model meaning, graph cleanup, external tools or speed."
+        ]
+      },
+      {
+        "title": "What remains open",
+        "items": [
+          "First recurring journey; final UI/API framework; admission, sensitive-data and retention experience.",
+          "Exact DeepSeek endpoint/output behavior; embedding default; multilingual accuracy, cost and latency.",
+          "Actual application, CLI, schema/migrations, corpus, live model integration and product evaluation are unbuilt.",
+          "Quality thresholds and performance targets are proposals to test, not achieved promises."
+        ]
+      },
+      {
+        "title": "Decisions to discuss with a mentor",
+        "items": [
+          "Is the chosen task useful enough, and is its memory scope defensible?",
+          "Are evidence, changes, ambiguity and forgetting understandable to the user?",
+          "Which baseline proves benefit, and what failure would change the design?",
+          "What should be cut? Defer graph servers, Redis, answer caches, autonomous reflection and broad integrations until justified."
+        ]
+      }
+    ],
+    "example": "First engineering success: a small reviewed history survives restart; a real query returns a cited answer; a correction changes the next answer; forgetting blocks the same information through source search and replay.",
+    "remaining": "The next recommended deliverable is a small behavior specification and acceptance cases. Build source persistence and a cited-answer path next, with evaluation fixtures alongside implementation.",
+    "mentor_question": "Which three observations would tell us this first end-to-end slice is ready to expand?",
+    "source": "Architecture §§14–16; brief pp.3–7"
+  }
+]

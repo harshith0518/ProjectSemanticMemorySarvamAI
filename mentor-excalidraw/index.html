@@ -1,0 +1,17 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Golden Goose · mentor board preview</title>
+<style>body{margin:0;background:#f5f8f6;color:#203c36;font:16px/1.5 Arial,sans-serif}header,main{max-width:1600px;margin:auto;padding:20px 28px}h1{font-size:26px;margin:0 0 8px}p{margin:8px 0}nav{display:flex;flex-wrap:wrap;gap:9px;margin:18px 0 0}button{padding:10px 14px;font:inherit;border:1px solid #a6bcb0;border-radius:7px;background:#fff;color:#203c36;cursor:pointer}button[aria-pressed="true"]{background:#244d3d;color:white}a{color:#245c46}main{padding-top:0}h2{font-size:19px}img{display:block;width:100%;height:auto;background:white;border:1px solid #d0dcd5}small{color:#53675e}.downloads{display:flex;gap:20px;flex-wrap:wrap}@media(max-width:700px){header,main{padding:14px}button{font-size:14px;padding:8px}h1{font-size:22px}}</style>
+</head><body><header><h1>Golden Goose · mentor board</h1><p>Start with the overview; open details when the discussion needs them. The downloadable board is editable in Excalidraw.</p>
+<div class="downloads"><a href="Golden-Goose-Mentor-Board.excalidraw" download>Full editable board</a><a href="Golden-Goose-Compact-Overview.excalidraw" download>Compact overview</a><a href="Golden-Goose-Mentor-Board.json" download>JSON copy</a><a href="Golden-Goose-Excalidraw-Pack.zip" download>Complete pack</a><a href="../README.md">Reading notes</a></div>
+<nav aria-label="Board areas"><button aria-pressed="true" data-page="0">00 Overview</button><button aria-pressed="false" data-page="1">01 Memory + database</button><button aria-pressed="false" data-page="2">02 CRUD</button><button aria-pressed="false" data-page="3">03 Safeguards</button><button aria-pressed="false" data-page="4">04 Technology choices</button><button aria-pressed="false" data-page="5">05 Next steps</button></nav></header>
+<main><h2 id="title">00 · Two ways to use Kivi. One memory system.</h2><a id="full-image" href="previews/00-two-ways-to-use-kivi-one-memory-system.svg"><img id="preview" src="previews/00-two-ways-to-use-kivi-one-memory-system.svg" alt="Two Kivi modes connected to one memory service and one SQLite database"></a><p><small>Planned architecture; application implementation pending. Open an individual image for full-size reading. Use the .excalidraw download for editing.</small></p></main>
+<script>
+const pages=[
+['00 · Two ways to use Kivi. One memory system.','00-two-ways-to-use-kivi-one-memory-system.svg'],
+['01 · Semantic memory inside the general database','01-semantic-memory-inside-the-general-database.svg'],
+['02 · Memory CRUD: what actually happens underneath','02-memory-crud-what-actually-happens-underneath.svg'],
+['03 · Why the design should stay correct','03-why-the-design-should-stay-correct.svg'],
+['04 · Technology choices: job, reason and tradeoff','04-technology-choices-job-reason-and-tradeoff.svg'],
+['05 · What we need next — and what to ask a mentor','05-what-we-need-next-and-what-to-ask-a-mentor.svg']];
+for(const button of document.querySelectorAll('button[data-page]'))button.addEventListener('click',()=>{const page=pages[Number(button.dataset.page)];document.getElementById('title').textContent=page[0];const img=document.getElementById('preview');img.src='previews/'+page[1];img.alt=page[0];document.getElementById('full-image').href=img.src;for(const b of document.querySelectorAll('button[data-page]'))b.setAttribute('aria-pressed',String(b===button));});
+</script></body></html>

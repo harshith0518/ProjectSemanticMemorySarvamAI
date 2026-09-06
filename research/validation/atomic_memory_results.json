@@ -1,0 +1,87 @@
+{
+  "experiment": "Isolated proposed storage contracts; not product implementation or benchmark",
+  "python_version": "3.12.14",
+  "sqlite_version": "3.53.1",
+  "database_mode": "fresh in-memory databases; foreign_keys=ON; actual FTS5 external-content triggers",
+  "passed": 12,
+  "total": 12,
+  "cases": [
+    {
+      "case": "atomic_admission_rollback",
+      "status": "passed",
+      "checks": "memory/evidence/FTS/job/revision roll back together; successful retry commits once"
+    },
+    {
+      "case": "operation_idempotency",
+      "status": "passed",
+      "checks": "same key/same payload replays; changed payload conflicts without new effects"
+    },
+    {
+      "case": "cross_user_scope",
+      "status": "passed",
+      "checks": "composite ownership FK rejects cross-user source link; retrieval independently scopes by user"
+    },
+    {
+      "case": "stale_extraction_fencing",
+      "status": "passed",
+      "rejected_before_write": [
+        "source_revision",
+        "control_generation"
+      ]
+    },
+    {
+      "case": "held_input_visibility",
+      "status": "passed",
+      "checks": "held input visible only to its current run; unavailable to shared retrieval/extraction until resolution",
+      "negative_control_raw_table_bypass_exposes_held_text": true
+    },
+    {
+      "case": "forgotten_span_projection",
+      "status": "passed",
+      "checks": "excluded original span absent from source FTS, memory FTS and full-source fallback; surviving text remains searchable",
+      "negative_control_raw_table_bypass_resurrects_forgotten_text": true,
+      "offset_unit": "Unicode code points"
+    },
+    {
+      "case": "stale_vector_cache_and_mirror",
+      "status": "passed",
+      "checks": "late vector commit rejected; obsolete cache and RAM mirror fail revision eligibility despite retained bytes"
+    },
+    {
+      "case": "stale_publication_rejection",
+      "status": "passed",
+      "checks": "stale generation rejected before response/sequence writes",
+      "negative_control_unchecked_publication_writes_stale_response": true
+    },
+    {
+      "case": "response_replay_after_forget",
+      "status": "passed",
+      "checks": "idempotent reply replays once; different payload conflicts; replay after forget respects purged body"
+    },
+    {
+      "case": "partial_index_and_atomic_publication",
+      "status": "passed",
+      "checks": "lexical/fallback work while dense coverage is pending; publication body/sequence roll back together; vector readiness changes atomically"
+    },
+    {
+      "case": "forget_before_held_source_release",
+      "status": "passed",
+      "checks": "forget while current source is held survives private re-read and later publication to source FTS/fallback; allowed text remains searchable"
+    },
+    {
+      "case": "own_source_promotion_rebase",
+      "status": "passed",
+      "checks": "sole unchanged current-input promotion rebases through a code-issued receipt; unrelated changes before or after promotion and changed projections reject",
+      "scope": "trusted in-process coordinator; sequential interleavings; no model authority or real concurrency tested"
+    }
+  ],
+  "limits": [
+    "No LLM extraction, entailment, natural-language control detection or answer quality tested.",
+    "No actual threads/processes, disk crash, WAL, network delivery, MCP or provider retries tested.",
+    "Sequential injected interleavings model stale work; they do not prove concurrent correctness.",
+    "One-source response dependency model and conservative response invalidation only.",
+    "Synthetic vector bytes; no semantic retrieval, embedding computation or performance measurement.",
+    "No physical erasure, backups, provider retention, arbitrary paraphrase forgetting or alias/graph cleanup tested.",
+    "The proposed Kivi product is not implemented by this script and may differ from this executable model."
+  ]
+}

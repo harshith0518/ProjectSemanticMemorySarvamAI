@@ -1,0 +1,106 @@
+[
+  {
+    "technology": "Python + custom coordinator",
+    "status": "Baseline plan; application not implemented",
+    "use": "One application coordinates requests, memory, models, tools and learning.",
+    "why": "Makes ordering, authority and failure handling explicit without a full agent framework.",
+    "limit": "Pin the runtime; implement and test lifecycle rules before adding framework complexity.",
+    "source": "ARCHITECTURE.md sections 1, 2, 7"
+  },
+  {
+    "technology": "SQLite + standard-library sqlite3",
+    "status": "Baseline plan; isolated contract probe only",
+    "use": "One local database stores source history, interpreted memory, evidence, revisions, jobs and operation results.",
+    "why": "A shared transaction boundary keeps memory changes, exclusions and durable work consistent with a simple reviewer setup.",
+    "limit": "Product migrations and recovery tests remain; reconsider the storage engine for multi-host or substantial concurrent writes.",
+    "source": "ARCHITECTURE.md sections 2, 4, 8, 14"
+  },
+  {
+    "technology": "SQLite FTS5",
+    "status": "Baseline; available in research runtime",
+    "use": "Search permitted source text and memory projections for names, terms and explicit phrases.",
+    "why": "Provides a lexical baseline and independent source retrieval when extraction misses useful information.",
+    "limit": "Wording differences can reduce recall; evaluate lexical retrieval before introducing dense retrieval.",
+    "source": "ARCHITECTURE.md sections 2, 6, 9"
+  },
+  {
+    "technology": "Pydantic + application validation",
+    "status": "Baseline plan; contracts not implemented",
+    "use": "Validate input and model-output structure before memory admission or tool execution.",
+    "why": "Typed contracts reject malformed values; application rules enforce ownership, evidence, scope and allowed transitions.",
+    "limit": "Valid JSON and types do not establish factual truth, permission or correct interpretation.",
+    "source": "ARCHITECTURE.md sections 2, 5, 7"
+  },
+  {
+    "technology": "HTTPX provider adapter",
+    "status": "Baseline plan; integration not implemented",
+    "use": "Call the hosted model with timeouts, bounded retries and recorded usage.",
+    "why": "Contains provider-specific behavior behind one replaceable interface shared by answering and learning.",
+    "limit": "Implement explicit error handling; API retry policy cannot establish whether an external tool effect occurred.",
+    "source": "ARCHITECTURE.md sections 2, 7, 11"
+  },
+  {
+    "technology": "NVIDIA-hosted DeepSeek",
+    "status": "User's provider/model-family choice; exact model pending",
+    "use": "Interpret candidate memories and generate answers or permitted tool proposals from selected evidence.",
+    "why": "Preserves the chosen provider while keeping memory truth and execution authority in application code.",
+    "limit": "Verify model ID, context limits, structured outputs, tool support, quotas and costs; eligible context leaves local storage.",
+    "source": "ARCHITECTURE.md sections 0.3, 2"
+  },
+  {
+    "technology": "Optional sentence-transformers + E5-small + NumPy",
+    "status": "Candidate extension; no local benchmark",
+    "use": "Encode permitted text locally and score stored vectors for meaning-based retrieval candidates.",
+    "why": "May recover paraphrases; exact local scoring avoids a separate vector service in the initial design.",
+    "limit": "Benchmark accuracy, languages, latency and storage; compare BGE-M3 only if useful. Vectors are not authoritative memory.",
+    "source": "ARCHITECTURE.md sections 2, 9, 10, 12"
+  },
+  {
+    "technology": "Entity, alias and edge tables",
+    "status": "Baseline representation; schema not implemented",
+    "use": "Connect supported identities and relationships with attribution, scope, time and evidence.",
+    "why": "Supports bounded relationship expansion inside the same revision and exclusion rules as other memory.",
+    "limit": "Matching names do not prove identity; unresolved identities remain separate until evidence supports resolution.",
+    "source": "ARCHITECTURE.md sections 2, 4, 6, 9"
+  },
+  {
+    "technology": "One durable learning worker",
+    "status": "Baseline plan; worker not implemented",
+    "use": "Process persisted learning jobs after permitted input is released; commit only against current revisions.",
+    "why": "Keeps learning off ordinary answer latency while retaining progress across interruption and restart.",
+    "limit": "Implement idempotency, attempt fencing, held-input rules, retries and recovery; stale workers must not restore forgotten knowledge.",
+    "source": "ARCHITECTURE.md sections 1, 7, 8, 9"
+  },
+  {
+    "technology": "argparse + persistent REPL",
+    "status": "Baseline development interface; not implemented",
+    "use": "Import records, query memory and inspect controls through the same core application.",
+    "why": "Makes the complete backend path repeatable before investing in the final interface.",
+    "limit": "CLI alone does not satisfy the assignment; a working normal-user interface remains required.",
+    "source": "ARCHITECTURE.md sections 0.3, 2, 15"
+  },
+  {
+    "technology": "Final UI + application/HTTP adapter",
+    "status": "Required; framework undecided",
+    "use": "Expose imported dictation history, typed Hey Kivi requests, inspectable sources and ordinary-language memory controls.",
+    "why": "Lets the mentor and reviewers experience the product while reusing one memory implementation.",
+    "limit": "Choose web or desktop around the first journey; FastAPI and React are not selected dependencies.",
+    "source": "ARCHITECTURE.md sections 0, 2, 11, 15, 16"
+  },
+  {
+    "technology": "Local tool registry; MCP deferred",
+    "status": "Baseline boundary; first local effect proposed",
+    "use": "Execute narrowly defined authorized operations and store observed outcomes separately from model claims.",
+    "why": "Makes authority, exact arguments and uncertain effects reviewable before adding external connectors.",
+    "limit": "Add MCP only for a selected integration; remembered requests never grant current execution authority.",
+    "source": "ARCHITECTURE.md sections 2, 7, 11"
+  },
+  {
+    "technology": "Graph/vector servers + Redis deferred",
+    "status": "Explicitly outside the initial baseline",
+    "use": "Future alternatives for measured traversal, vector-scan or shared-cache requirements.",
+    "why": "One local database and optional checked memory views keep the initial system simpler to operate and inspect.",
+    "limit": "Add infrastructure only for demonstrated limits; any migration must revalidate ownership, exclusions, isolation and retry contracts.",
+    "source": "ARCHITECTURE.md sections 2, 10, 16"
+  }
+]

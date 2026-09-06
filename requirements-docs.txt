@@ -1,0 +1,3 @@
+# Documentation generators only; the application has not been implemented.
+# Use Python 3.12 or newer. Existing generated artifacts need no installation.
+Pillow==12.3.0
