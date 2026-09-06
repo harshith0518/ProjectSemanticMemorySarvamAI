@@ -1,0 +1,21 @@
+# 09 — Storage for Kivi
+
+**Recommendation (design inference):** use one local SQLite database, FTS5 lexical retrieval, and application-side exhaustive cosine scoring over stored vectors. For roughly 500 dictations and a few thousand derived memories, this minimizes setup during the two-day CLI build and remains usable behind a local UI. Benchmark before promising latency. An illustrative 5,000 × 1,024 float32 matrix occupies 20.48 MB before metadata; exact scanning avoids approximate-index recall tuning.
+
+**Alternatives:** Postgres + pgvector becomes attractive for a hosted, multi-user service, concurrent writers, and server-managed filtering. pgvector supports exact search by default and optional approximate indexes; approximate filtering can underfill results, with iterative scans available to compensate. A graph service adds another deployment and consistency boundary; start with relational entity/edge tables unless evaluated multi-hop queries justify it. These are scope judgments, not measured performance comparisons. [pgvector documentation](https://github.com/pgvector/pgvector)
+
+**Proposed data model:**
+
+- `sources`: stable ID, original text, source key, content hash, capture/import times, language hint, raw metadata, revision and deletion state. Preserve original text separately from normalized search text.
+- `memories`: ID, type, text, status, confidence, event-time bounds, timezone, extraction version and superseded-by ID. `memory_evidence` joins memories to source revisions and exact character spans; one memory can have multiple supporting sources.
+- `entities`, `aliases`, `memory_entities`, and optional typed `relations`: retain provenance and unresolved entity references rather than silently merging names.
+- `embeddings`: memory revision, model/version, dimensions, normalization, vector bytes and input hash. Compare only compatible embeddings; rebuild derived indexes when model or text changes.
+- `jobs`, `import_runs`, `schema_migrations`: idempotency key, stage, attempts, errors, model/prompt versions, token usage and recorded cost basis.
+
+**Multilingual retrieval:** FTS5 `unicode61` defaults to letter/number/private-use categories; combining marks are not generally included. Evaluate categories `L* N* Co M*`, retain original orthography, and normalize indexed/query copies consistently. Test Hindi vowel signs, nukta, conjuncts, joiners, Latin accents and mixed-script names using vocabulary inspection. `remove_diacritics` concerns Latin characters; it is not Hindi normalization. Unicode tokenization does **not** provide Hindi morphology, transliteration equivalence, synonym matching or semantic search. Keep multilingual embeddings and explicit aliases as separate retrieval paths. [SQLite FTS5](https://sqlite.org/fts5.html)
+
+**Atomicity and recovery:** import source records and queued work transactionally; perform model calls outside write transactions, then atomically commit validated memories, evidence and search updates. Enforce uniqueness on source identity/revision and job stage/input/version. Resume incomplete jobs; retries must not duplicate memories. External API calls may still incur duplicate charges after an ambiguous timeout. Use short transactions, foreign keys, a busy timeout and one writer. WAL supports concurrent readers but only one writer and requires same-host storage; select `synchronous=FULL` for durable commits. Verify SQLite includes the WAL-reset fix: 3.51.3+, or documented backports 3.50.7/3.44.6. [SQLite WAL](https://sqlite.org/wal.html)
+
+Use numbered, checksummed migrations and a verified snapshot before migration. Back up through SQLite's backup API; copying only an active `.db` can omit committed WAL state. Rebuild FTS/vectors from canonical rows after restore. [SQLite backup API](https://sqlite.org/backup.html)
+
+**Cost and unknowns:** local storage needs no database-service subscription; hosting and model calls remain separate costs. Use parameterized SQL over typed metadata for counts, dates and cost totals. Store unknown values as NULL, preserve currency/units and source evidence, and report excluded unknowns. Confirm actual expansion, embedding dimensions, FTS5 availability, runtime version, metadata quality and local persistence before finalizing.
