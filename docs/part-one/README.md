@@ -25,7 +25,7 @@ The assignment brief, page 3, asks for a positioning statement of at most 100 wo
 
 ## Remaining applicant work
 
-Provide the two final independently written documents. Preserve their actual submission dates and provenance; do not backdate them or describe prior AI-assisted discussion as independent writing. Their absence need not stop machine-readiness checks, but the Part One submission gate remains open.
+On 11 September 2026, the applicant reported that the final Part One documents are complete and in their possession, and explicitly approved S03 implementation. The assistant has not inspected, counted or saved those final documents. Repository inclusion and mechanical checks remain pending when they are supplied; this does not block the approved S03 work. Preserve actual dates/provenance without backdating or relabeling the earlier AI-assisted drafts as independent writing.
 
 The notes' competitor comparisons and language-quality claims are reproduced as supplied, not verified findings. The implementation continues to follow the explicit decisions in [DECISIONS.md](../../DECISIONS.md); these draft notes do not silently change scope. For evaluation traces, record observable operations, evidence, usage and concise decision summaries, not claimed access to a model's hidden reasoning.
 

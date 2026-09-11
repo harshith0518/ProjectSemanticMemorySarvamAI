@@ -1,0 +1,71 @@
+name: kivi
+
+x-app: &app
+  image: kivi:local
+  build: .
+  init: true
+  networks: [application]
+
+x-runtime-environment: &runtime-environment
+  KIVI_DB_HOST: db
+  KIVI_DB_NAME: kivi
+  KIVI_DB_USER: kivi_app
+  KIVI_DB_PASSWORD: ${KIVI_APP_PASSWORD:?Copy .env.example to .env and set passwords}
+
+services:
+  db:
+    image: pgvector/pgvector:0.8.6-pg17-bookworm@sha256:cf134a767f474095eeba57e0117be8e568e011a63f33fbf252f14c9b760f8e6f
+    environment:
+      POSTGRES_DB: kivi
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${KIVI_POSTGRES_PASSWORD:?Set KIVI_POSTGRES_PASSWORD in .env}
+      APP_USER: kivi_app
+      APP_PASSWORD: ${KIVI_APP_PASSWORD:?Set KIVI_APP_PASSWORD in .env}
+      MIGRATION_USER: kivi_migrate
+      MIGRATION_PASSWORD: ${KIVI_MIGRATION_PASSWORD:?Set KIVI_MIGRATION_PASSWORD in .env}
+    volumes:
+      - database:/var/lib/postgresql/data
+      - ./docker/postgres/init-db.sh:/docker-entrypoint-initdb.d/10-kivi.sh:ro
+    healthcheck:
+      test: [CMD-SHELL, 'pg_isready -h 127.0.0.1 -U postgres -d kivi']
+      interval: 2s
+      timeout: 3s
+      retries: 30
+    networks: [application]
+
+  migrate:
+    <<: *app
+    command: [alembic, upgrade, head]
+    environment:
+      <<: *runtime-environment
+      KIVI_DB_USER: kivi_migrate
+      KIVI_DB_PASSWORD: ${KIVI_MIGRATION_PASSWORD:?Set KIVI_MIGRATION_PASSWORD in .env}
+    depends_on:
+      db: {condition: service_healthy}
+
+  api:
+    <<: *app
+    environment: *runtime-environment
+    ports: ['127.0.0.1:${KIVI_API_PORT:-8000}:8000']
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+    healthcheck:
+      test: [CMD, kivi, ready]
+      interval: 5s
+      timeout: 10s
+      retries: 12
+
+  cli:
+    <<: *app
+    profiles: [tools]
+    entrypoint: [kivi]
+    command: [ready]
+    environment: *runtime-environment
+    depends_on:
+      migrate: {condition: service_completed_successfully}
+
+volumes:
+  database:
+
+networks:
+  application:
