@@ -1,31 +1,42 @@
-# Credentials and private/product data
+# Secrets and local configuration
 .env
 .env.*
 !.env.example
 *.pem
 *.key
-*.sqlite
-*.sqlite3
-*.db
-*.db-wal
-*.db-shm
-data/private/
-data/local/
-secrets/
-# Local environments and caches
+
+# Python/runtime/build artifacts
 .venv/
-venv/
-node_modules/
 __pycache__/
 *.py[cod]
 .pytest_cache/
-.mypy_cache/
 .ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+dist/
+build/
+*.egg-info/
+node_modules/
+
+# Private or regenerable state; curated synthetic corpus/reports remain tracked
+*.db
+*.sqlite
+*.sqlite3
+*.db-journal
+*.sqlite-wal
+*.sqlite-shm
+*.sqlite3-wal
+*.sqlite3-shm
+data/private/
+data/imported/
+eval/runs/
+logs/
 .cache/
-models/
-tmp/
+.tmp/
+
+# Local editor/OS files
 .DS_Store
 Thumbs.db
 .idea/
 .vscode/
-.codex/
