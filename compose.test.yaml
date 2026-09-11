@@ -43,6 +43,7 @@ services:
     build: .
     init: true
     logging: {driver: none}
+    command: [python, tests/browser/server.py]
     environment:
       KIVI_ENV: test
       KIVI_DB_HOST: test-db
