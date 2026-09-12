@@ -236,6 +236,7 @@ class ModelBudget(Base):
 class ModelCall(Base):
     __tablename__ = "model_calls"
     __table_args__ = (
+        UniqueConstraint("id", "owner_id", name="call_owner"),
         ForeignKeyConstraint(
             ["job_id", "owner_id"],
             ["kivi.jobs.id", "kivi.jobs.owner_id"],
@@ -253,6 +254,9 @@ class ModelCall(Base):
     owner_id: Mapped[UUID] = mapped_column(ForeignKey("kivi.policies.owner_id"))
     job_id: Mapped[UUID | None]
     lease_token: Mapped[UUID | None]
+    request_hash: Mapped[str | None] = mapped_column(String(64))
+    policy_revision: Mapped[int | None] = mapped_column(Integer)
+    feedback_parent_id: Mapped[UUID | None] = mapped_column(ForeignKey("kivi.model_calls.id"))
     configured_model: Mapped[str] = mapped_column(String(128))
     returned_model: Mapped[str | None] = mapped_column(String(128))
     prompt_version: Mapped[str] = mapped_column(String(32))
@@ -265,3 +269,82 @@ class ModelCall(Base):
     recorded_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )
+
+
+class ControlReceipt(Base):
+    __tablename__ = "control_receipts"
+    __table_args__ = (
+        UniqueConstraint("id", "owner_id", name="control_owner"),
+        ForeignKeyConstraint(
+            ["target_revision_id", "owner_id"],
+            ["kivi.claim_revisions.id", "kivi.claim_revisions.owner_id"],
+            name="control_target_owner",
+        ),
+        CheckConstraint("action IN ('correct', 'world_change', 'forget')", name="control_action"),
+        CheckConstraint("request_hash ~ '^[0-9a-f]{64}$'", name="control_request_hash"),
+    )
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    owner_id: Mapped[UUID] = mapped_column(ForeignKey("kivi.policies.owner_id"))
+    target_revision_id: Mapped[UUID]
+    action: Mapped[str] = mapped_column(String(16))
+    request_hash: Mapped[str] = mapped_column(String(64))
+    result: Mapped[dict] = mapped_column(JSONB)
+    recorded_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), server_default=func.now()
+    )
+
+
+class SourceExclusion(Base):
+    __tablename__ = "source_exclusions"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["source_id", "owner_id", "source_revision"],
+            ["kivi.sources.id", "kivi.sources.owner_id", "kivi.sources.revision"],
+            name="exclusion_source_owner_revision",
+        ),
+        ForeignKeyConstraint(
+            ["control_id", "owner_id"],
+            ["kivi.control_receipts.id", "kivi.control_receipts.owner_id"],
+            name="source_exclusion_control_owner",
+        ),
+    )
+    source_id: Mapped[UUID] = mapped_column(primary_key=True)
+    source_revision: Mapped[int] = mapped_column(Integer)
+    owner_id: Mapped[UUID]
+    control_id: Mapped[UUID]
+
+
+class PassageExclusion(Base):
+    __tablename__ = "passage_exclusions"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["passage_id", "owner_id"],
+            ["kivi.passages.id", "kivi.passages.owner_id"],
+            name="exclusion_passage_owner",
+        ),
+        ForeignKeyConstraint(
+            ["control_id", "owner_id"],
+            ["kivi.control_receipts.id", "kivi.control_receipts.owner_id"],
+            name="passage_exclusion_control_owner",
+        ),
+    )
+    passage_id: Mapped[UUID] = mapped_column(primary_key=True)
+    owner_id: Mapped[UUID]
+    control_id: Mapped[UUID]
+
+
+class FeedbackReceipt(Base):
+    __tablename__ = "feedback_receipts"
+    __table_args__ = (
+        ForeignKeyConstraint(
+            ["call_id", "owner_id"],
+            ["kivi.model_calls.id", "kivi.model_calls.owner_id"],
+            name="feedback_call_owner",
+        ),
+        CheckConstraint("diagnosis IN ('retrieval', 'generation')", name="feedback_diagnosis"),
+        CheckConstraint("status IN ('started', 'succeeded', 'failed')", name="feedback_status"),
+    )
+    call_id: Mapped[UUID] = mapped_column(primary_key=True)
+    owner_id: Mapped[UUID]
+    diagnosis: Mapped[str] = mapped_column(String(16))
+    status: Mapped[str] = mapped_column(String(16), server_default="started")
