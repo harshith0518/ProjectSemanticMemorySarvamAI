@@ -1,0 +1,10 @@
+docker :  Container kivi-tests-test-db-1  Starting
+At line:2 char:128
++ ... EXITCODE }; docker compose -p kivi-tests -f compose.test.yaml run --r ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container kivi...-db-1  Starting:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container kivi-tests-test-db-1  Started
+unable to get image 'kivi:local': request returned 502 Bad Gateway for API route and version 
+http://%2F%2F.%2Fpipe%2FdockerDesktopLinuxEngine/v1.51/images/kivi:local/json, check if the server supports the requested API version
