@@ -1,5 +1,13 @@
 # Part One source notes
 
+## Google Doc supplied on 12 September 2026
+
+The applicant shared [this Google Doc](https://docs.google.com/document/d/1HvpNaWZOQLfiot2T1BGN8mLT_hJobyCErL1dfpOr12U/edit). Its [full text export](google-doc-snapshot.txt) is preserved without modifying the remote document. Separate [positioning](positioning-user-supplied.txt) and [vision](vision-user-supplied.txt) excerpts retain the supplied wording, removing surrounding whitespace only. The snapshot retains the glossary, other notes and all five following Q&A entries.
+
+The positioning body contains **96 words** against a maximum of 100. The vision passage before the numbered Q&A contains **387 words** against a maximum of 600. Including that following Q&A, the material after the vision heading contains **711 words**; do not silently treat the whole combined passage as the shorter excerpt. Counts exclude the section headings and use whitespace-separated tokens. [Hashes, boundaries and actual mechanical results](../../eval/reports/part-one-google-doc.json).
+
+The applicant reports writing the document. Substantial wording overlaps the assistant-authored reference drafts preserved below, so these files are labeled **user-supplied, not independently certified originals**. Mechanical word-count compliance does not establish the brief's independent-writing requirement. No prose was rewritten or generated for these excerpts. Confirm the intended treatment of the following Q&A and resolve the independent-authorship requirement before marking Part One submission-ready.
+
 [user-notes.txt](user-notes.txt) preserves the substantive notes supplied by the applicant in this project conversation on 11 September 2026, beginning “Kivi - by sarvam” and ending “Part - 2 :-”. Wording and spelling are retained; paragraph whitespace and file line endings are normalized. The surrounding request to search earlier chats is not part of the notes.
 
 These are **source notes, not two finalized Part One submissions**. They combine a glossary, scope, output expectations and five Part One questions/answers. Subsequently, the applicant explicitly requested two drafts in chat. Those assistant-written drafts are preserved below as AI-assisted reference material; they do not establish independent authorship or complete the submission requirement.
@@ -25,7 +33,7 @@ The assignment brief, page 3, asks for a positioning statement of at most 100 wo
 
 ## Remaining applicant work
 
-On 11 September 2026, the applicant reported that the final Part One documents are complete and in their possession, and explicitly approved S03 implementation. The assistant has not inspected, counted or saved those final documents. Repository inclusion and mechanical checks remain pending when they are supplied; this does not block the approved S03 work. Preserve actual dates/provenance without backdating or relabeling the earlier AI-assisted drafts as independent writing.
+On 11 September 2026, the applicant reported that the final Part One documents were complete and in their possession, and explicitly approved S03 implementation. On 12 September the applicant supplied the Google Doc preserved above. That closes source availability and mechanical preservation, not independent-authorship verification or confirmation that the following Q&A belongs outside the submitted vision. Preserve actual dates/provenance without backdating or relabeling the earlier AI-assisted drafts as independent writing.
 
 The notes' competitor comparisons and language-quality claims are reproduced as supplied, not verified findings. The implementation continues to follow the explicit decisions in [DECISIONS.md](../../DECISIONS.md); these draft notes do not silently change scope. For evaluation traces, record observable operations, evidence, usage and concise decision summaries, not claimed access to a model's hidden reasoning.
 

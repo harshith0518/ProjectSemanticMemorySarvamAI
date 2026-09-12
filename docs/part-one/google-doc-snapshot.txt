@@ -1,0 +1,61 @@
+﻿Kivi - by sarvam
+Glossary: 
+* Semantic Memory: the memory which is extracted from the past conversations with the user and make it ready to access by kivi to give me the personalized assistance when user access the feature “hey kivi”
+* Dictation: just speaking - which kivi turns into text with the personalized touch (like refining the grammar, personalized phonetic formating)
+* Request: your question or instruction with hey kivi
+* Reply: when gives response back for the request
+* Conversation: understanding the requesting and replying back (can be one or set of requests)
+* History: Saved dications and interactions with kivi
+* Sources: Original passages supporting a reply or a memory
+* Dictionary: Words, names and preferred spellings (will be discussed later)
+* Writing Styles: tone, length and formatting preferences for the output generated (will be discussed later)
+* Collection: A set of conversations (will be discussed later)
+What is the product : It has 2 key features
+* Regular Dictation: just turns speech to text with proper personalized phonetic words (like kiwi → kivi, vikram → vikhram which are related to the user specific context) - we can also pass these conversations to the semantic memory 
+* Hey kivi: this is the main focus of this assignment
+   * It is a personal assistant that remembers useful context from the past conversations, works, dictations and uses that data when user asks for a help related to that
+   * It learns facts, preferences, changes from user messages and dictation history and prepares answers, drafts without referring that related context/data again 
+   * Even though it learns from the data - the user will have control towards what it must remember, what it shouldn’t (like incognito/privacy mode) or even forget some already remembered data
+   * The plan is to make a memory layer (semantic memory) so that the learnable information will get stored and accessible to kivi - inorder to give responses with the retrieval of the personalized touch for it
+What is our assignment goal:
+* The main goal is - to build Kivi’s semantic memory—how it learns, stores, retrieves, and applies context to future tasks. We’ll deliver a working product around this core, including essential data import and memory controls, then add richer dictation interfaces and conversation organization as time allows along with the proper frontend and complete demonstration commands to let an agent execute this whole thing and verify (can be hosted or can be local - i am preferring the dockerized project of database+ backend+ UI in a single docker compose - which makes easier to execute and test right away)
+* Outputs requirements : prepare around 500 - transcripts containing  the inputs+outputs+how our project is retrieving the data from semantic memory + how the model is reasoning + how the semantic memory is getting updated + what is the cost, size, latency all metrical data for each of the query - so that the verifying agent will clearly see how the project is working
+What is semantic memory and how it works: 
+* 
+
+
+
+
+
+Part - 1 :-
+Product Positioning : 
+              Kivi is a personal assistant that remembers useful context, information from a user’s previous conversations and dictations, so users do not have to explain the same things again. Its core experience - ‘Hey Kivi,’ uses supported facts, preferences and changes to answer questions and prepare relevant drafts. Regular Dictation focuses on the pattern of text the user usually writes. Users can inspect sources, correct mistaken understanding, forget information or use Private mode. The value is practical personalization that saves effort while keeping the user in control and making our product the main interface for day-to-day work. 
+
+
+
+Product Vision : 
+              Kivi should become an assistant that develops useful understanding of a person’s work and applies it when they need help. The value is in reducing repeated explanations, searching through old conversations and manually assembling information for everyday writing.
+The product has two experiences. Regular Dictation focuses on converting the speech to text from the user writing patterns, with appropriate grammar, spelling and formatting. Hey Kivi handles questions and requests that benefit from remembered data for the relevant request. Dictations can contribute useful information to memory without remembered facts being silently inserted into ordinary dictated text.
+For example: a user may mention that “Atlas is now planned for 21 September”  it should explain why the date changed, and separately record that Mira prefers three-bullet Atlas updates. Later, “Hey Kivi, draft an update for Mira” should bring these details together, preserve the date’s status as a plan and show the supporting sources. Producing the draft must not imply that it was sent.
+Semantic memory should preserve selected facts, preferences and changes that could help with future tasks. Each memory needs enough context to explain whom it concerns, where it applies, when it is relevant and what supports it. Questions, quotations, tentative plans and temporary instructions need different treatment. Conflicting information should be labelled as uncertain until there is evidence to resolve it. A correction to Kivi’s interpretation must be distinguished from a real change in the user’s situation.
+Users should be able to inspect what Kivi remembers and its sources, correct mistakes and ask it to forget information. Forgetting should prevent that information from being reused or relearned from the same supporting material. Private interactions should use only the current input and explicitly supplied temporary context, without reading saved personal information or retaining the interaction in the application.
+For this assignment, the priority is a working semantic memory experience built around imported transcripts, persistent storage, useful assistance and essential memory controls. A small interface should make the complete journey understandable. Richer dictation interfaces and conversation organization can follow. Support for Indian languages and English is a direction to evaluate, with limitations reported honestly.
+Success means Kivi makes later tasks easier while remaining accurate, understandable and correctable. We should demonstrate this through unfamiliar inputs, changing information, ambiguity and user feedback, and measure useful task completion, unsupported claims, latency and cost.
+
+
+1. What should semantic memory allow kivi - to become?
+An assistant that builds useful understanding from the previous user messages and dictations, then applies relevant knowledge when the person asks for help. Hey kivi handles assistance, logical completion of words&sentences - whereas Dictation only translates into text relevant to the user (having grammar refining and phonetic memory)
+2. Where is the real value created for the user?
+In reducing the repeated explanations and manual writing/doing text related work - which makes it easier if he/she uses our product kivi since we not only use formatting and doing the work - along with the proper semantic memory access making it more personalized
+   3. What deserves to be remembered?
+Selected details&preferences, filtering out any user specific information rather than generic request (like synonyms of positivity -or- reply laughing emoji reaction) - shortly it should describe something about or related to the user. From that we mainly preserve - whom the information is related to, where it can be applied, its source of truth, its uncertainty etc…
+   4. What must kivi never assume?
+A tentative plan as confirmed, using uncertain or non evidence information in the replies, short term instructions as permanent instructions, or assuming something from the memory without any user-connection.
+   5. Why should someone trust it enough to keep using it?
+Because they can check the sources, correct the mistaken understanding, request kivi forget information or use private conversation for privacy concerns in some cases. Making the product legit, trustable and safe kind of vibes. This is one thing and also a very future specific discussion. Another thing is the more accessibility of the semantic memory and giving personalized responses for every request in any indian language/english which most of the competitors are not accurately focussing (like wisprflow has this in the paid plan - but no promising personalization - only the ai usage with some context towards the user - source: wisprflow documentation)
+
+
+        
+
+
+Part - 2 :-
