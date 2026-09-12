@@ -1,0 +1,50 @@
+docker :  Container kivi-handoff-20260912-api-1  Stopping
+At line:2 char:172
++ ... ED='false'; docker compose -p kivi-handoff-20260912 down 2>&1 | Tee-O ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Container kivi...api-1  Stopping:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Container kivi-handoff-20260912-api-1  Stopped
+ Container kivi-handoff-20260912-api-1  Removing
+ Container kivi-handoff-20260912-api-1  Removed
+ Container kivi-handoff-20260912-migrate-1  Stopping
+ Container kivi-handoff-20260912-migrate-1  Stopped
+ Container kivi-handoff-20260912-migrate-1  Removing
+ Container kivi-handoff-20260912-migrate-1  Removed
+ Container kivi-handoff-20260912-db-1  Stopping
+ Container kivi-handoff-20260912-db-1  Stopped
+ Container kivi-handoff-20260912-db-1  Removing
+ Container kivi-handoff-20260912-db-1  Removed
+ Network kivi-handoff-20260912_application  Removing
+ Network kivi-handoff-20260912_application  Removed
+docker :  Network kivi-handoff-20260912_application  Creating
+At line:2 char:326
++ ... TEXITCODE}; docker compose -p kivi-handoff-20260912 up -d --no-build  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Network kivi-h...ation  Creating:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Network kivi-handoff-20260912_application  Created
+ Container kivi-handoff-20260912-db-1  Creating
+ Container kivi-handoff-20260912-db-1  Created
+ Container kivi-handoff-20260912-migrate-1  Creating
+ Container kivi-handoff-20260912-migrate-1  Created
+ Container kivi-handoff-20260912-api-1  Creating
+ Container kivi-handoff-20260912-api-1  Created
+ Container kivi-handoff-20260912-db-1  Starting
+ Container kivi-handoff-20260912-db-1  Started
+ Container kivi-handoff-20260912-db-1  Waiting
+ Container kivi-handoff-20260912-db-1  Healthy
+ Container kivi-handoff-20260912-migrate-1  Starting
+ Container kivi-handoff-20260912-migrate-1  Started
+ Container kivi-handoff-20260912-migrate-1  Waiting
+ Container kivi-handoff-20260912-migrate-1  Exited
+ Container kivi-handoff-20260912-api-1  Starting
+ Container kivi-handoff-20260912-api-1  Started
+ Container kivi-handoff-20260912-api-1  Waiting
+ Container kivi-handoff-20260912-db-1  Waiting
+ Container kivi-handoff-20260912-migrate-1  Waiting
+ Container kivi-handoff-20260912-migrate-1  Exited
+ Container kivi-handoff-20260912-db-1  Healthy
+ Container kivi-handoff-20260912-api-1  Healthy

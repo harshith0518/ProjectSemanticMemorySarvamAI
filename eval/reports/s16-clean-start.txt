@@ -1,0 +1,32 @@
+docker :  Network kivi-handoff-20260912_application  Creating
+At line:2 char:392
++ ... ED='false'; docker compose -p kivi-handoff-20260912 up -d --no-build  ...
++                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: ( Network kivi-h...ation  Creating:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+ Network kivi-handoff-20260912_application  Created
+ Volume "kivi-handoff-20260912_database"  Creating
+ Volume "kivi-handoff-20260912_database"  Created
+ Container kivi-handoff-20260912-db-1  Creating
+ Container kivi-handoff-20260912-db-1  Created
+ Container kivi-handoff-20260912-migrate-1  Creating
+ Container kivi-handoff-20260912-migrate-1  Created
+ Container kivi-handoff-20260912-api-1  Creating
+ Container kivi-handoff-20260912-api-1  Created
+ Container kivi-handoff-20260912-db-1  Starting
+ Container kivi-handoff-20260912-db-1  Started
+ Container kivi-handoff-20260912-db-1  Waiting
+ Container kivi-handoff-20260912-db-1  Healthy
+ Container kivi-handoff-20260912-migrate-1  Starting
+ Container kivi-handoff-20260912-migrate-1  Started
+ Container kivi-handoff-20260912-migrate-1  Waiting
+ Container kivi-handoff-20260912-migrate-1  Exited
+ Container kivi-handoff-20260912-api-1  Starting
+ Container kivi-handoff-20260912-api-1  Started
+ Container kivi-handoff-20260912-migrate-1  Waiting
+ Container kivi-handoff-20260912-api-1  Waiting
+ Container kivi-handoff-20260912-db-1  Waiting
+ Container kivi-handoff-20260912-migrate-1  Exited
+ Container kivi-handoff-20260912-db-1  Healthy
+ Container kivi-handoff-20260912-api-1  Healthy
