@@ -11,6 +11,7 @@ export default defineConfig({
     outDir: "../src/kivi/web",
     emptyOutDir: true,
     sourcemap: false,
+    assetsInlineLimit: 0,
     rollupOptions: {
       output: {
         entryFileNames: "app.js",
