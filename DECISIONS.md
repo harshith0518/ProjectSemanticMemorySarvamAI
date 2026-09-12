@@ -206,6 +206,12 @@ The original seven-page assignment PDF was read in full; pages 3-7 were also ren
 
 The bird image is the original public [Kivi app icon](https://heykivi.ai/assets/brand/kivi-app-icon-64.png), downloaded from [Sarvam's Kivi website](https://heykivi.ai/) at the user's request. It is bundled locally with source attribution, not hotlinked. This is an independent assignment implementation, not the production Sarvam application. No new runtime dependency, migration, speech recognition, deployment or external-action tool is introduced.
 
+## Lightning manual backup confirmation (12 September, 21:30 IST)
+
+The user requested a fresh check of `nvidia/nemotron-3.5-lightning-30b-a3b` and retention as a backup. Three synthetic provider calls completed; an initial rejected extraction was repaired, a memory was stored, and a cited revised-date answer completed. This supports retaining the existing explicit NVIDIA selector as a manual backup, not declaring universal quality, guaranteed capacity, automatic failover or unrestricted data use. The key remains in the ignored local environment without duplication. No runtime configuration was changed. [Measured results and limitations](eval/reports/s12-lightning-backup-review.json).
+
+The ordinary browser still runs an older disabled extractor/Kimi configuration; live access from the fresh probe does not establish that the UI is activated. Activation and the final full-corpus/rehearsal gates remain separate. Personal/reviewer and Private boundaries, the 750-request / 10,000,000-token / $0-paid ceiling and the pending Google expansion approval are unchanged. All three requests, including the validation rejection, are accounted for; lifetime usage is 67 requests and 412,543 tokens.
+
 ## Free-provider comparison checkpoint (12 September, 21:09 IST)
 
 The user approved at most 20 new public-synthetic Google/OpenRouter comparison requests inside the existing combined 750-request / 10,000,000-accounted-token / $0-paid ceiling, including Google's free-tier product-improvement and human-review terms for synthetic data only. No personal or Private free-provider inference, paid fallback, or automatic provider/model switch was approved. NVIDIA's separately consented reviewer mode remains separate.
