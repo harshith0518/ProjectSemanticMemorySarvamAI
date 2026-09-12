@@ -21,6 +21,9 @@ dependencies = [
 [project.scripts]
 kivi = "kivi.cli:app"
 
+[tool.hatch.build.targets.wheel.force-include]
+"src/kivi/web" = "kivi/web"
+
 [dependency-groups]
 dev = ["hatchling==1.27.0", "pytest>=8.4,<10", "ruff>=0.12,<1"]
 
