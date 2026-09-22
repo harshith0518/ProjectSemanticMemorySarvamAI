@@ -7,6 +7,7 @@ from pydantic import Field
 from sqlalchemy import select
 from sqlalchemy.dialects.postgresql import insert
 
+from kivi.answer_policy import is_date_question
 from kivi.answers import AskRequest
 from kivi.contracts import Contract, ObservationInput, parse_contract
 from kivi.controls import blocked_sources
@@ -57,6 +58,20 @@ class ConversationOperations:
                 ):
                     raise ApplicationError(ErrorCode.IMPORT_CONFLICT)
             else:
+                if command.request.representation == "auto" and (
+                    is_date_question(command.request.question)
+                    or self._general_question_evidence(session, context, command.request)
+                    is not None
+                ):
+                    return {
+                        "source_id": None,
+                        "status": "not_saved",
+                        "decision": "no_memory",
+                        "revision_ids": [],
+                        "error_code": None,
+                        "attempts": 0,
+                        "calls": [],
+                    }
                 # Only earlier USER messages from this collection/conversation can resolve
                 # follow-up references. No client-provided history or assistant answers.
                 previous = session.scalars(
