@@ -23,6 +23,7 @@ from kivi.contracts import (
     parse_contract,
 )
 from kivi.controls import ControlOperations, blocked_sources
+from kivi.conversation import ConversationOperations
 from kivi.errors import ApplicationError, ErrorCode
 from kivi.imports import (
     IMPORT_PREFIX,
@@ -58,6 +59,7 @@ def content_hash(raw: str, formatted: str | None) -> str:
 
 
 class Service(
+    ConversationOperations,
     ProcessingOperations,
     RetrievalOperations,
     AnswerOperations,
