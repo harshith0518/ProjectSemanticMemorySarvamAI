@@ -19,7 +19,7 @@ from kivi.api import create_app
 from kivi.db import make_engine
 from kivi.errors import ApplicationError
 from kivi.models import ModelBudget, ModelCall, Policy, Source
-from kivi.providers import MAX_REQUESTS, NvidiaResponder
+from kivi.providers import MAX_REQUESTS, FreeChatProvider, NvidiaResponder
 from kivi.services import Service
 
 
@@ -122,6 +122,30 @@ def test_trial_question_and_sources_checked_independently(answering):
         session.execute(update(Source).values(raw_text="Private source sentinel"))
     with pytest.raises(ApplicationError, match="trial_input_denied"):
         service.prepare_answer(context, request(representation="history"))
+
+
+def test_free_question_opt_in_keeps_synthetic_source_gate(answering):
+    service, context = answering
+    service.responder = FreeChatProvider(
+        provider="google",
+        role="responder",
+        model="gemini-3.5-flash-lite",
+        approved=True,
+        key="synthetic-test-key",
+        unfamiliar_questions=True,
+    )
+    packet = service.prepare_answer(
+        context,
+        request(question="Who is Atlas?", representation="history"),
+    )
+    assert len(packet.evidence.sources) == 8
+    with service._session(context, write=True) as session:
+        session.execute(update(Source).values(raw_text="Unapproved source sentinel"))
+    with pytest.raises(ApplicationError, match="trial_input_denied"):
+        service.prepare_answer(
+            context,
+            request(question="Who is Atlas?", representation="history"),
+        )
 
 
 def test_full_history_overflow_is_explicit(answering, engine):

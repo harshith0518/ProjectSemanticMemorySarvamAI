@@ -195,7 +195,11 @@ def test_free_provider_consent_and_no_reviewer_inheritance(monkeypatch, provider
     assert not NvidiaExtractor.from_env().enabled
     monkeypatch.setenv("KIVI_FREE_SYNTHETIC_TRIAL_APPROVED", "true")
     monkeypatch.setenv("KIVI_FREE_DATA_POLICY_ACK", "I_ACCEPT_FREE_SYNTHETIC_DATA_TERMS")
-    assert NvidiaExtractor.from_env().enabled and not NvidiaExtractor.from_env().reviewer_mode
+    configured = NvidiaExtractor.from_env()
+    assert configured.enabled and not configured.reviewer_mode
+    assert not configured.unfamiliar_questions
+    monkeypatch.setenv("KIVI_FREE_SYNTHETIC_QUESTIONS_APPROVED", "true")
+    assert NvidiaExtractor.from_env().unfamiliar_questions
     monkeypatch.setenv("KIVI_REVIEWER_INFERENCE_APPROVED", "true")
     monkeypatch.setenv("KIVI_REVIEWER_DATA_POLICY_ACK", REVIEWER_ACK)
     assert not NvidiaExtractor.from_env().enabled

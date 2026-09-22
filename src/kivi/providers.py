@@ -57,11 +57,20 @@ class NvidiaExtractor:
     live = True
     timeout_seconds = 90
 
-    def __init__(self, *, approved: bool = False, key: str = "", transport=None, reviewer=False):
+    def __init__(
+        self,
+        *,
+        approved: bool = False,
+        key: str = "",
+        transport=None,
+        reviewer=False,
+        unfamiliar_questions=False,
+    ):
         self.enabled = approved
         self._key = key
         self._transport = transport
         self.reviewer_mode = reviewer
+        self.unfamiliar_questions = bool(unfamiliar_questions)
         self.max_requests = configured_limit("KIVI_MAX_REQUESTS", MAX_REQUESTS)
         self.max_total_tokens = configured_limit("KIVI_MAX_TOTAL_TOKENS", MAX_TOTAL_TOKENS)
 
@@ -255,6 +264,9 @@ class FreeChatProvider(NvidiaExtractor):
             model=os.environ.get(f"KIVI_FREE_{role.upper()}_MODEL") or models[0],
             approved=enabled,
             key=os.environ.get(key_name, ""),
+            unfamiliar_questions=(
+                enabled and os.environ.get("KIVI_FREE_SYNTHETIC_QUESTIONS_APPROVED") == "true"
+            ),
         )
 
     def prepare(self, packet, *, repair=False):
