@@ -46,6 +46,7 @@ from kivi.policy import LocalIdentity, Mode, RequestContext
 from kivi.processing import ProcessingOperations
 from kivi.providers import NvidiaExtractor, NvidiaResponder
 from kivi.retrieval import RetrievalOperations
+from kivi.turn_assessment import TurnAssessmentOperations
 
 PROBE_KEY = "bootstrap:synthetic:v1"
 PROBE_RAW = "Synthetic bootstrap observation: the blue box contains seven marbles."
@@ -59,6 +60,7 @@ def content_hash(raw: str, formatted: str | None) -> str:
 
 
 class Service(
+    TurnAssessmentOperations,
     ConversationOperations,
     ProcessingOperations,
     RetrievalOperations,

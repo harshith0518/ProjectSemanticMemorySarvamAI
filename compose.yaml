@@ -5,6 +5,10 @@ x-app: &app
   build: .
   init: true
   networks: [application]
+  # Docker Desktop resolves this name itself; host-gateway supplies the same mapping on Linux.
+  # Ollama remains on the host loopback interface rather than becoming a Compose service.
+  extra_hosts:
+    - "host.docker.internal:host-gateway"
 
 x-runtime-environment: &runtime-environment
   KIVI_DB_HOST: db
@@ -16,14 +20,24 @@ x-runtime-environment: &runtime-environment
   KIVI_REVIEWER_DATA_POLICY_ACK: ${KIVI_REVIEWER_DATA_POLICY_ACK:-}
   KIVI_MAX_REQUESTS: ${KIVI_MAX_REQUESTS:-1100}
   KIVI_MAX_TOTAL_TOKENS: ${KIVI_MAX_TOTAL_TOKENS:-10000000}
-  KIVI_INFERENCE_PROVIDER: ${KIVI_INFERENCE_PROVIDER:-nvidia}
+  # Google is the normal demo route. Set this explicitly to ollama to use the local backup.
+  KIVI_INFERENCE_PROVIDER: ${KIVI_INFERENCE_PROVIDER:-google}
   KIVI_FREE_SYNTHETIC_TRIAL_APPROVED: ${KIVI_FREE_SYNTHETIC_TRIAL_APPROVED:-false}
   KIVI_FREE_SYNTHETIC_QUESTIONS_APPROVED: ${KIVI_FREE_SYNTHETIC_QUESTIONS_APPROVED:-false}
   KIVI_FREE_SYNTHETIC_SOURCES_APPROVED: ${KIVI_FREE_SYNTHETIC_SOURCES_APPROVED:-false}
   KIVI_PRIVATE_DIRECT_APPROVED: ${KIVI_PRIVATE_DIRECT_APPROVED:-false}
   KIVI_FREE_DATA_POLICY_ACK: ${KIVI_FREE_DATA_POLICY_ACK:-}
-  KIVI_FREE_EXTRACTOR_MODEL: ${KIVI_FREE_EXTRACTOR_MODEL:-}
-  KIVI_FREE_RESPONDER_MODEL: ${KIVI_FREE_RESPONDER_MODEL:-}
+  KIVI_FREE_EXTRACTOR_MODEL: ${KIVI_FREE_EXTRACTOR_MODEL:-gemini-3.5-flash-lite}
+  KIVI_FREE_RESPONDER_MODEL: ${KIVI_FREE_RESPONDER_MODEL:-gemini-3.5-flash-lite}
+  # Local-only Ollama backup. Its Python configuration accepts only this host gateway and /v1.
+  KIVI_OLLAMA_ENABLED: ${KIVI_OLLAMA_ENABLED:-false}
+  KIVI_OLLAMA_BASE_URL: "${KIVI_OLLAMA_BASE_URL:-http://host.docker.internal:11434/v1}"
+  KIVI_OLLAMA_API_KEY: ${KIVI_OLLAMA_API_KEY:-ollama}
+  KIVI_OLLAMA_EXTRACTOR_MODEL: ${KIVI_OLLAMA_EXTRACTOR_MODEL:-qwen3:4b}
+  KIVI_OLLAMA_RESPONDER_MODEL: ${KIVI_OLLAMA_RESPONDER_MODEL:-qwen3:4b}
+  # Declared for a future retrieval experiment only; the application does not call embeddings.
+  KIVI_OLLAMA_EMBEDDING_MODEL: ${KIVI_OLLAMA_EMBEDDING_MODEL:-qwen3-embedding:0.6b}
+  KIVI_OLLAMA_PRIVATE_DIRECT: ${KIVI_OLLAMA_PRIVATE_DIRECT:-false}
 
 services:
   db:
